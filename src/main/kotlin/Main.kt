@@ -40,7 +40,7 @@ fun main(args: Array<String>) {
                  else -> println("UNKNOWN_CHAR")
              }
          }
-         println(tokenSteam.joinToString(" numm \n"))
+         println(tokenSteam.joinToString("\n"))
      } else {
          println("EOF  null") // Placeholder, remove this line when implementing the scanner
      }
