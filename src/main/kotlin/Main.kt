@@ -1,3 +1,4 @@
+import java.io.Console
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -59,5 +60,6 @@ fun main(args: Array<String>) {
         }
     }
     tokenSteam.add(TokenLike.Token(TokenType.EOF, ""))
-    println(tokenSteam.joinToString("\n"))
+    println(tokenSteam.filter { it is TokenLike.Token }.joinToString("\n"))
+    System.err.println(tokenSteam.filter { it is TokenLike.LexicalError }.joinToString("\n"))
 }
