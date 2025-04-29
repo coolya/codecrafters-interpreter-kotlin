@@ -3,7 +3,7 @@ import kotlin.system.exitProcess
 
 
 enum class TokenType {
-    LEFT_PAREN, RIGHT_PAREN, EOF
+    LEFT_PAREN, RIGHT_PAREN, EOF, LEFT_BRACE, RIGHT_BRACE
 }
 
 data class Token(val type: TokenType, val lexeme: String) {
@@ -37,6 +37,8 @@ fun main(args: Array<String>) {
              when (char) {
                  '(' -> tokenSteam.add(Token(TokenType.LEFT_PAREN, "("))
                  ')' -> tokenSteam.add(Token(TokenType.RIGHT_PAREN, ")"))
+                 '{' -> tokenSteam.add(Token(TokenType.LEFT_BRACE, "{"))
+                 '}' -> tokenSteam.add(Token(TokenType.RIGHT_BRACE, "}"))
                  else -> println("UNKNOWN_CHAR")
              }
          }
