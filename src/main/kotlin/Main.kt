@@ -61,5 +61,7 @@ fun main(args: Array<String>) {
     }
     tokenSteam.add(TokenLike.Token(TokenType.EOF, ""))
     println(tokenSteam.filter { it is TokenLike.Token }.joinToString("\n"))
-    System.err.println(tokenSteam.filter { it is TokenLike.LexicalError }.joinToString("\n"))
+    val errors = tokenSteam.filter { it is TokenLike.LexicalError }
+    System.err.println(errors.joinToString("\n"))
+    if (errors.isNotEmpty()) exitProcess(65)
 }
