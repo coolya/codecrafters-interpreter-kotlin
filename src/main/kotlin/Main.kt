@@ -85,8 +85,8 @@ fun main(args: Array<String>) {
     if (fileContents.isNotEmpty()) {
         val chars = fileContents.toCharArray()
         val iterator = chars.charIterator()
-        while (iterator.peek() != null) {
-            val char = iterator.peek()
+        while (iterator.hasNext()) {
+            val char = iterator.current()
             when (char) {
                 '(' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_PAREN, "("))
                 ')' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_PAREN, ")"))
