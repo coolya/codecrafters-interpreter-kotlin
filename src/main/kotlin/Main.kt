@@ -3,7 +3,7 @@ import kotlin.system.exitProcess
 
 
 enum class TokenType {
-    LEFT_PAREN, RIGHT_PAREN
+    LEFT_PAREN, RIGHT_PAREN, EOF
 }
 
 data class Token(val type: TokenType, val lexeme: String) {
@@ -40,8 +40,9 @@ fun main(args: Array<String>) {
                  else -> println("UNKNOWN_CHAR")
              }
          }
+         tokenSteam.add(Token(TokenType.EOF, ""))
          println(tokenSteam.joinToString("\n"))
      } else {
-         println("EOF  null") // Placeholder, remove this line when implementing the scanner
+
      }
 }
