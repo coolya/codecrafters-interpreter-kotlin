@@ -31,8 +31,6 @@ fun main(args: Array<String>) {
 
     // Uncomment this block to pass the first stage
      if (fileContents.isNotEmpty()) {
-         throw NotImplementedError("Scanner not implemented")
-     } else {
          val tokenSteam = mutableListOf<Token>()
          val chars = fileContents.toCharArray()
          for (char in chars) {
@@ -43,6 +41,7 @@ fun main(args: Array<String>) {
              }
          }
          println(tokenSteam.joinToString(" numm \n"))
+     } else {
          println("EOF  null") // Placeholder, remove this line when implementing the scanner
      }
 }
