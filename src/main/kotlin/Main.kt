@@ -6,11 +6,20 @@ enum class TokenType {
     LEFT_PAREN, RIGHT_PAREN, EOF, LEFT_BRACE, RIGHT_BRACE, STAR, DOT, COMMA, PLUS, MINUS, SLASH, SEMICOLON
 }
 
-data class Token(val type: TokenType, val lexeme: String) {
-    override fun toString(): String {
-        return "${type.name} $lexeme null"
+sealed class TokenLike {
+    data class Token(val type: TokenType, val lexeme: String) : TokenLike() {
+        override fun toString(): String {
+            return "${type.name} $lexeme null"
+        }
+    }
+
+    data class LexicalError(val line: Int, val message: String, val position: Int? = null) : TokenLike() {
+        override fun toString(): String {
+            return "[line ${line}] Error: ${message}"
+        }
     }
 }
+
 
 fun main(args: Array<String>) {
 
@@ -30,25 +39,27 @@ fun main(args: Array<String>) {
     val fileContents = File(filename).readText()
 
     // Uncomment this block to pass the first stage
-    val tokenSteam = mutableListOf<Token>()
+    val tokenSteam = mutableListOf<TokenLike>()
     if (fileContents.isNotEmpty()) {
         val chars = fileContents.toCharArray()
         for (char in chars) {
             when (char) {
-                '(' -> tokenSteam.add(Token(TokenType.LEFT_PAREN, "("))
-                ')' -> tokenSteam.add(Token(TokenType.RIGHT_PAREN, ")"))
-                '{' -> tokenSteam.add(Token(TokenType.LEFT_BRACE, "{"))
-                '}' -> tokenSteam.add(Token(TokenType.RIGHT_BRACE, "}"))
-                '*' -> tokenSteam.add(Token(TokenType.STAR, "*"))
-                ',' -> tokenSteam.add(Token(TokenType.COMMA, ","))
-                '.' -> tokenSteam.add(Token(TokenType.DOT, "."))
-                '-' -> tokenSteam.add(Token(TokenType.MINUS, "-"))
-                '+' -> tokenSteam.add(Token(TokenType.PLUS, "+"))
-                ';' -> tokenSteam.add(Token(TokenType.SEMICOLON, ";"))
+                '(' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_PAREN, "("))
+                ')' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_PAREN, ")"))
+                '{' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_BRACE, "{"))
+                '}' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_BRACE, "}"))
+                '*' -> tokenSteam.add(TokenLike.Token(TokenType.STAR, "*"))
+                ',' -> tokenSteam.add(TokenLike.Token(TokenType.COMMA, ","))
+                '.' -> tokenSteam.add(TokenLike.Token(TokenType.DOT, "."))
+                '-' -> tokenSteam.add(TokenLike.Token(TokenType.MINUS, "-"))
+                '+' -> tokenSteam.add(TokenLike.Token(TokenType.PLUS, "+"))
+                ';' -> tokenSteam.add(TokenLike.Token(TokenType.SEMICOLON, ";"))
+                '#' -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: #"))
+                '$' -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $"))
                 else -> println("UNKNOWN_CHAR")
             }
         }
     }
-    tokenSteam.add(Token(TokenType.EOF, ""))
+    tokenSteam.add(TokenLike.Token(TokenType.EOF, ""))
     println(tokenSteam.joinToString("\n"))
 }
