@@ -27,7 +27,7 @@ sealed class TokenLike {
 }
 
 class CharIterator(private val chars: CharArray) {
-    private var current = 0
+    private var current = -1
     fun hasNext(): Boolean {
         return current < chars.size
     }
@@ -47,6 +47,7 @@ class CharIterator(private val chars: CharArray) {
     }
 
     fun current(): Char? {
+        if(current < 0) return null
         return chars[current]
     }
 }
@@ -86,7 +87,7 @@ fun main(args: Array<String>) {
         val chars = fileContents.toCharArray()
         val iterator = chars.charIterator()
         while (iterator.hasNext()) {
-            val char = iterator.current()
+            val char = iterator.next()
             when (char) {
                 '(' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_PAREN, "("))
                 ')' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_PAREN, ")"))
@@ -104,7 +105,6 @@ fun main(args: Array<String>) {
                 '<' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.LESS_EQUAL, TokenType.LESS))
                 else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
-            iterator.next()
         }
     }
     tokenSteam.add(TokenLike.Token(TokenType.EOF, ""))
