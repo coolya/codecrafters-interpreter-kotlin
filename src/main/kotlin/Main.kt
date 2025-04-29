@@ -70,7 +70,7 @@ fun CharIterator.nextTokenConsumesLine(possibleNext: Char, matchingType: TokenTy
     if (this.peek() == possibleNext) {
         val previous = this.current()
         var lexeme = previous.toString() + next().toString()
-        while(this.next() != '\n') {
+        while(this.next() != '\n' && this.hasNext()) {
             lexeme += this.current().toString()
         }
         return TokenLike.Token(matchingType, lexeme)
