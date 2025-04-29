@@ -8,7 +8,8 @@ enum class TokenType {
     STAR, DOT, COMMA, PLUS, MINUS, SLASH, SLASH_SLASH, SEMICOLON,
     EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL,
     GREATER, GREATER_EQUAL, LESS, LESS_EQUAL,
-    STRING, NUMBER
+    STRING, NUMBER,
+    IDENTIFIER
 
 }
 
@@ -171,6 +172,16 @@ fun lex(fileContents: String, tokenSteam: MutableList<TokenLike>) {
                     } else break
                 }
                 tokenSteam.add(TokenLike.NumberToken(TokenType.NUMBER, literalValue, literalValue.toDouble()))
+            }
+
+            in 'a'..'z', in 'A'..'Z', '_' -> {
+                var identifier = char.toString()
+                while (iterator.hasNext()) {
+                    if (iterator.peek() in 'a'..'z' || iterator.peek() in 'A'..'Z' || iterator.peek() in '0'..'9' || iterator.peek() == '_') {
+                        identifier += iterator.next().toString()
+                    } else break
+                }
+                tokenSteam.add(TokenLike.SimpleToken(TokenType.IDENTIFIER, identifier))
             }
 
             '\t', ' ' -> continue
