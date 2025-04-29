@@ -47,10 +47,7 @@ class CharIterator(private val chars: CharArray) {
     }
 
     fun current(): Char? {
-        if (hasNext()) {
-            return chars[current]
-        }
-        return null;
+        return chars[current]
     }
 }
 
