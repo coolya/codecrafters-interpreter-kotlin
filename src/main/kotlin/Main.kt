@@ -30,8 +30,8 @@ fun main(args: Array<String>) {
     val fileContents = File(filename).readText()
 
     // Uncomment this block to pass the first stage
-     if (fileContents.isNotEmpty()) {
-         val tokenSteam = mutableListOf<Token>()
+    val tokenSteam = mutableListOf<Token>()
+    if (fileContents.isNotEmpty()) {
          val chars = fileContents.toCharArray()
          for (char in chars) {
              when (char) {
@@ -40,9 +40,7 @@ fun main(args: Array<String>) {
                  else -> println("UNKNOWN_CHAR")
              }
          }
-         tokenSteam.add(Token(TokenType.EOF, ""))
-         println(tokenSteam.joinToString("\n"))
-     } else {
-
      }
+    tokenSteam.add(Token(TokenType.EOF, ""))
+    println(tokenSteam.joinToString("\n"))
 }
