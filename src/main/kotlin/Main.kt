@@ -34,7 +34,8 @@ class CharIterator(private val chars: CharArray) {
 
     fun next(): Char? {
         if (hasNext()) {
-            return chars[current++]
+            current++;
+            return current()
         }
         return null;
     }
