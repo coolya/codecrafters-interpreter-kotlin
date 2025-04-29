@@ -8,12 +8,24 @@ enum class TokenType {
     STAR, DOT, COMMA, PLUS, MINUS, SLASH, SLASH_SLASH, SEMICOLON,
     EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL,
     GREATER, GREATER_EQUAL, LESS, LESS_EQUAL,
-    STRING
+    STRING, NUMBER
 
 }
 
 sealed class TokenLike {
-    data class Token(val type: TokenType, val lexeme: String, val value: String? = null) : TokenLike() {
+    data class SimpleToken(val type: TokenType, val lexeme: String) : TokenLike() {
+        override fun toString(): String {
+            return "${type.name} $lexeme null"
+        }
+    }
+
+    data class StringToken(val type: TokenType, val value: String) : TokenLike() {
+        override fun toString(): String {
+            return "${type.name} \"$value\" $value"
+        }
+    }
+
+    data class NumberToken(val type: TokenType, val lexeme: String, val value: Double) : TokenLike() {
         override fun toString(): String {
             return "${type.name} $lexeme $value"
         }
@@ -62,9 +74,9 @@ fun CharIterator.nextTokenMatches(possibleNext: Char, matchingType: TokenType, n
     if (this.peek() == possibleNext) {
         val previous = this.current()
         this.next()
-        return TokenLike.Token(matchingType, previous.toString() + possibleNext.toString())
+        return TokenLike.SimpleToken(matchingType, previous.toString() + possibleNext.toString())
     }
-    return TokenLike.Token(noneMatching, this.current().toString())
+    return TokenLike.SimpleToken(noneMatching, this.current().toString())
 }
 
 fun CharIterator.nextTokenConsumesLine(possibleNext: Char, noneMatching: TokenType): TokenLike? {
@@ -76,7 +88,7 @@ fun CharIterator.nextTokenConsumesLine(possibleNext: Char, noneMatching: TokenTy
         }
         return null
     }
-    return TokenLike.Token(noneMatching, this.current().toString())
+    return TokenLike.SimpleToken(noneMatching, this.current().toString())
 }
 
 fun main(args: Array<String>) {
@@ -101,8 +113,8 @@ fun main(args: Array<String>) {
     if (fileContents.isNotEmpty()) {
         lex(fileContents, tokenSteam)
     }
-    tokenSteam.add(TokenLike.Token(TokenType.EOF, ""))
-    println(tokenSteam.filter { it is TokenLike.Token }.joinToString("\n"))
+    tokenSteam.add(TokenLike.SimpleToken(TokenType.EOF, ""))
+    println(tokenSteam.filterNot { it is TokenLike.LexicalError }.joinToString("\n"))
     val errors = tokenSteam.filter { it is TokenLike.LexicalError }
     System.err.println(errors.joinToString("\n"))
     if (errors.isNotEmpty()) exitProcess(65)
@@ -115,16 +127,16 @@ fun lex(fileContents: String, tokenSteam: MutableList<TokenLike>) {
     while (iterator.hasNext()) {
         val char = iterator.next()
         when (char) {
-            '(' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_PAREN, "("))
-            ')' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_PAREN, ")"))
-            '{' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_BRACE, "{"))
-            '}' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_BRACE, "}"))
-            '*' -> tokenSteam.add(TokenLike.Token(TokenType.STAR, "*"))
-            ',' -> tokenSteam.add(TokenLike.Token(TokenType.COMMA, ","))
-            '.' -> tokenSteam.add(TokenLike.Token(TokenType.DOT, "."))
-            '-' -> tokenSteam.add(TokenLike.Token(TokenType.MINUS, "-"))
-            '+' -> tokenSteam.add(TokenLike.Token(TokenType.PLUS, "+"))
-            ';' -> tokenSteam.add(TokenLike.Token(TokenType.SEMICOLON, ";"))
+            '(' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.LEFT_PAREN, "("))
+            ')' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.RIGHT_PAREN, ")"))
+            '{' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.LEFT_BRACE, "{"))
+            '}' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.RIGHT_BRACE, "}"))
+            '*' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.STAR, "*"))
+            ',' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.COMMA, ","))
+            '.' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.DOT, "."))
+            '-' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.MINUS, "-"))
+            '+' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.PLUS, "+"))
+            ';' -> tokenSteam.add(TokenLike.SimpleToken(TokenType.SEMICOLON, ";"))
             '=' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.EQUAL_EQUAL, TokenType.EQUAL))
             '!' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.BANG_EQUAL, TokenType.BANG))
             '>' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.GREATER_EQUAL, TokenType.GREATER))
@@ -133,21 +145,34 @@ fun lex(fileContents: String, tokenSteam: MutableList<TokenLike>) {
                 val nextToken = iterator.nextTokenConsumesLine('/', TokenType.SLASH)
                 if (nextToken != null) tokenSteam.add(nextToken) else line++
             }
+
             '"' -> {
                 var literalValue = ""
                 var result: TokenLike = TokenLike.LexicalError(line, "Unterminated string.")
 
                 while (iterator.hasNext()) {
-                    if(iterator.next() == '"') {
-                        result = TokenLike.Token(TokenType.STRING, "\"${literalValue}\"", literalValue)
+                    if (iterator.next() == '"') {
+                        result = TokenLike.StringToken(TokenType.STRING, literalValue)
                         break
-                    } else if(iterator.current() == '\n') {
+                    } else if (iterator.current() == '\n') {
                         line++
                         break
                     } else literalValue += iterator.current().toString()
                 }
                 tokenSteam.add(result)
             }
+
+            in '0'..'9' -> {
+                var literalValue = char.toString()
+
+                while (iterator.hasNext()) {
+                    if (iterator.peek() in '0'..'9' || iterator.peek() == '.') {
+                        literalValue += iterator.next().toString()
+                    } else break
+                }
+                tokenSteam.add(TokenLike.NumberToken(TokenType.NUMBER, literalValue, literalValue.toDouble()))
+            }
+
             '\t', ' ' -> continue
             '\n' -> line++
             else -> tokenSteam.add(TokenLike.LexicalError(line, "Unexpected character: $char"))
