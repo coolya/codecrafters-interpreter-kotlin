@@ -4,7 +4,13 @@ import kotlin.system.exitProcess
 
 
 enum class TokenType {
-    LEFT_PAREN, RIGHT_PAREN, EOF, LEFT_BRACE, RIGHT_BRACE, STAR, DOT, COMMA, PLUS, MINUS, SLASH, SEMICOLON
+    LEFT_PAREN, RIGHT_PAREN,
+    EOF,
+    LEFT_BRACE, RIGHT_BRACE,
+    STAR, DOT, COMMA, PLUS, MINUS, SLASH, SEMICOLON,
+    EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL,
+    GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
+
 }
 
 sealed class TokenLike {
@@ -43,7 +49,7 @@ fun main(args: Array<String>) {
     val tokenSteam = mutableListOf<TokenLike>()
     if (fileContents.isNotEmpty()) {
         val chars = fileContents.toCharArray()
-        for (char in chars) {
+        chars.forEachIndexed { i, char ->
             when (char) {
                 '(' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_PAREN, "("))
                 ')' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_PAREN, ")"))
@@ -55,6 +61,10 @@ fun main(args: Array<String>) {
                 '-' -> tokenSteam.add(TokenLike.Token(TokenType.MINUS, "-"))
                 '+' -> tokenSteam.add(TokenLike.Token(TokenType.PLUS, "+"))
                 ';' -> tokenSteam.add(TokenLike.Token(TokenType.SEMICOLON, ";"))
+                '=' -> tokenSteam.add(chars.nextTokenMatches(i, '=', TokenType.EQUAL_EQUAL, TokenType.EQUAL))
+                '!' -> tokenSteam.add(chars.nextTokenMatches(i, '=', TokenType.BANG_EQUAL, TokenType.BANG))
+                '>' -> tokenSteam.add(chars.nextTokenMatches(i, '=', TokenType.GREATER_EQUAL, TokenType.GREATER))
+                '<' -> tokenSteam.add(chars.nextTokenMatches(i, '=', TokenType.LESS_EQUAL, TokenType.LESS))
                 else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
         }
@@ -64,4 +74,20 @@ fun main(args: Array<String>) {
     val errors = tokenSteam.filter { it is TokenLike.LexicalError }
     System.err.println(errors.joinToString("\n"))
     if (errors.isNotEmpty()) exitProcess(65)
+}
+
+fun CharArray.nextTokenMatches(
+    currentIndex: Int, nextToken: Char, matchTokenType: TokenType, notMatchTokenType: TokenType
+): TokenLike.Token {
+    // End of stream is reached
+    if (currentIndex + 1 == this.size) {
+        return TokenLike.Token(notMatchTokenType, this[currentIndex].toString())
+    } else {
+        val token = this[currentIndex + 1]
+        return if (token ==  nextToken) {
+            TokenLike.Token(matchTokenType, listOf(this[currentIndex], token).joinToString(""))
+        } else {
+            TokenLike.Token(notMatchTokenType, token.toString())
+        }
+    }
 }
