@@ -118,6 +118,7 @@ fun main(args: Array<String>) {
                 '>' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.GREATER_EQUAL, TokenType.GREATER))
                 '<' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.LESS_EQUAL, TokenType.LESS))
                 '/' -> iterator.nextTokenConsumesLine('/', TokenType.SLASH)?.let { tokenSteam.add(it) }
+                '\t', '\n', ' ' -> continue
                 else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
         }
