@@ -66,14 +66,14 @@ fun CharIterator.nextTokenMatches(possibleNext: Char, matchingType: TokenType, n
     return TokenLike.Token(noneMatching, this.current().toString())
 }
 
-fun CharIterator.nextTokenConsumesLine(possibleNext: Char, matchingType: TokenType, noneMatching: TokenType): TokenLike {
+fun CharIterator.nextTokenConsumesLine(possibleNext: Char, noneMatching: TokenType): TokenLike? {
     if (this.peek() == possibleNext) {
         val previous = this.current()
         var lexeme = previous.toString() + next().toString()
         while(this.next() != '\n' && this.hasNext()) {
             lexeme += this.current().toString()
         }
-        return TokenLike.Token(matchingType, lexeme)
+        return null
     }
     return TokenLike.Token(noneMatching, this.current().toString())
 }
@@ -117,7 +117,7 @@ fun main(args: Array<String>) {
                 '!' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.BANG_EQUAL, TokenType.BANG))
                 '>' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.GREATER_EQUAL, TokenType.GREATER))
                 '<' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.LESS_EQUAL, TokenType.LESS))
-                '/' -> tokenSteam.add(iterator.nextTokenConsumesLine('/', TokenType.SLASH_SLASH, TokenType.SLASH))
+                '/' -> iterator.nextTokenConsumesLine('/', TokenType.SLASH)?.let { tokenSteam.add(it) }
                 else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
         }
