@@ -66,6 +66,17 @@ fun CharIterator.nextTokenMatches(possibleNext: Char, matchingType: TokenType, n
     return TokenLike.Token(noneMatching, this.current().toString())
 }
 
+fun CharIterator.nextTokenConsumesLine(possibleNext: Char, matchingType: TokenType, noneMatching: TokenType): TokenLike {
+    if (this.peek() == possibleNext) {
+        val previous = this.current()
+        var lexeme = previous.toString() + next().toString()
+        while(this.next() != '\n') {
+            lexeme += this.current().toString()
+        }
+        return TokenLike.Token(matchingType, lexeme)
+    }
+}
+
 fun main(args: Array<String>) {
 
     if (args.size < 2) {
@@ -105,7 +116,7 @@ fun main(args: Array<String>) {
                 '!' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.BANG_EQUAL, TokenType.BANG))
                 '>' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.GREATER_EQUAL, TokenType.GREATER))
                 '<' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.LESS_EQUAL, TokenType.LESS))
-                '/' -> tokenSteam.add(iterator.nextTokenMatches('/', TokenType.SLASH_SLASH, TokenType.SLASH))
+                '/' -> tokenSteam.add(iterator.nextTokenConsumesLine('/', TokenType.SLASH_SLASH, TokenType.SLASH))
                 else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
         }
