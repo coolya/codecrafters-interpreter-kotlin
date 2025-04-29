@@ -1,4 +1,3 @@
-import java.io.Console
 import java.io.File
 import kotlin.system.exitProcess
 
@@ -27,6 +26,45 @@ sealed class TokenLike {
     }
 }
 
+class CharIterator(private val chars: CharArray) {
+    private var current = 0
+    fun hasNext(): Boolean {
+        return current < chars.size
+    }
+
+    fun next(): Char? {
+        if (hasNext()) {
+            return chars[current++]
+        }
+        return null;
+    }
+
+    fun peek(): Char? {
+        if (hasNext()) {
+            return chars[current + 1]
+        }
+        return null;
+    }
+
+    fun current(): Char? {
+        if (hasNext()) {
+            return chars[current]
+        }
+        return null;
+    }
+}
+
+fun CharArray.charIterator(): CharIterator {
+    return CharIterator(this);
+}
+
+fun CharIterator.nextTokenMatches(possibleNext: Char, matchingType: TokenType, noneMatching: TokenType): TokenLike {
+    if (this.peek() == possibleNext) {
+        this.next()
+        return TokenLike.Token(matchingType, this.current().toString() + possibleNext.toString())
+    }
+    return TokenLike.Token(noneMatching, this.current().toString())
+}
 
 fun main(args: Array<String>) {
 
@@ -49,7 +87,9 @@ fun main(args: Array<String>) {
     val tokenSteam = mutableListOf<TokenLike>()
     if (fileContents.isNotEmpty()) {
         val chars = fileContents.toCharArray()
-        chars.forEachIndexed { i, char ->
+        val iterator = chars.charIterator()
+        while (iterator.hasNext()) {
+            val char = iterator.next()
             when (char) {
                 '(' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_PAREN, "("))
                 ')' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_PAREN, ")"))
@@ -61,10 +101,10 @@ fun main(args: Array<String>) {
                 '-' -> tokenSteam.add(TokenLike.Token(TokenType.MINUS, "-"))
                 '+' -> tokenSteam.add(TokenLike.Token(TokenType.PLUS, "+"))
                 ';' -> tokenSteam.add(TokenLike.Token(TokenType.SEMICOLON, ";"))
-                '=' -> tokenSteam.add(chars.nextTokenMatches(i, '=', TokenType.EQUAL_EQUAL, TokenType.EQUAL))
-                '!' -> tokenSteam.add(chars.nextTokenMatches(i, '=', TokenType.BANG_EQUAL, TokenType.BANG))
-                '>' -> tokenSteam.add(chars.nextTokenMatches(i, '=', TokenType.GREATER_EQUAL, TokenType.GREATER))
-                '<' -> tokenSteam.add(chars.nextTokenMatches(i, '=', TokenType.LESS_EQUAL, TokenType.LESS))
+                '=' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.EQUAL_EQUAL, TokenType.EQUAL))
+                '!' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.BANG_EQUAL, TokenType.BANG))
+                '>' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.GREATER_EQUAL, TokenType.GREATER))
+                '<' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.LESS_EQUAL, TokenType.LESS))
                 else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
         }
@@ -76,18 +116,3 @@ fun main(args: Array<String>) {
     if (errors.isNotEmpty()) exitProcess(65)
 }
 
-fun CharArray.nextTokenMatches(
-    currentIndex: Int, nextToken: Char, matchTokenType: TokenType, notMatchTokenType: TokenType
-): TokenLike.Token {
-    // End of stream is reached
-    if (currentIndex + 1 == this.size) {
-        return TokenLike.Token(notMatchTokenType, this[currentIndex].toString())
-    } else {
-        val token = this[currentIndex + 1]
-        return if (token ==  nextToken) {
-            TokenLike.Token(matchTokenType, listOf(this[currentIndex], token).joinToString(""))
-        } else {
-            TokenLike.Token(notMatchTokenType, token.toString())
-        }
-    }
-}
