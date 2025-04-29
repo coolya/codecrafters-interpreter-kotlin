@@ -100,6 +100,7 @@ fun main(args: Array<String>) {
     if (fileContents.isNotEmpty()) {
         val chars = fileContents.toCharArray()
         val iterator = chars.charIterator()
+        var line = 1
         while (iterator.hasNext()) {
             val char = iterator.next()
             when (char) {
@@ -117,9 +118,13 @@ fun main(args: Array<String>) {
                 '!' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.BANG_EQUAL, TokenType.BANG))
                 '>' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.GREATER_EQUAL, TokenType.GREATER))
                 '<' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.LESS_EQUAL, TokenType.LESS))
-                '/' -> iterator.nextTokenConsumesLine('/', TokenType.SLASH)?.let { tokenSteam.add(it) }
-                '\t', '\n', ' ' -> continue
-                else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
+                '/' -> {
+                    val nextToken = iterator.nextTokenConsumesLine('/', TokenType.SLASH)
+                    if (nextToken != null) tokenSteam.add(nextToken) else line++
+                }
+                '\t', ' ' -> continue
+                '\n' -> line++
+                else -> tokenSteam.add(TokenLike.LexicalError(line, "Unexpected character: $char"))
             }
         }
     }
