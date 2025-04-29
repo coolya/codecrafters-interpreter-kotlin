@@ -86,7 +86,7 @@ fun main(args: Array<String>) {
         val chars = fileContents.toCharArray()
         val iterator = chars.charIterator()
         while (iterator.hasNext()) {
-            val char = iterator.next()
+            val char = iterator.peek()
             when (char) {
                 '(' -> tokenSteam.add(TokenLike.Token(TokenType.LEFT_PAREN, "("))
                 ')' -> tokenSteam.add(TokenLike.Token(TokenType.RIGHT_PAREN, ")"))
@@ -104,6 +104,7 @@ fun main(args: Array<String>) {
                 '<' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.LESS_EQUAL, TokenType.LESS))
                 else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
+            iterator.next()
         }
     }
     tokenSteam.add(TokenLike.Token(TokenType.EOF, ""))
