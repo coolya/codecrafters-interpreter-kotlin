@@ -59,8 +59,9 @@ fun CharArray.charIterator(): CharIterator {
 
 fun CharIterator.nextTokenMatches(possibleNext: Char, matchingType: TokenType, noneMatching: TokenType): TokenLike {
     if (this.peek() == possibleNext) {
+        val previous = this.current()
         this.next()
-        return TokenLike.Token(matchingType, this.current().toString() + possibleNext.toString())
+        return TokenLike.Token(matchingType, previous.toString() + possibleNext.toString())
     }
     return TokenLike.Token(noneMatching, this.current().toString())
 }
