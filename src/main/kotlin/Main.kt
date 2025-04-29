@@ -6,7 +6,7 @@ enum class TokenType {
     LEFT_PAREN, RIGHT_PAREN,
     EOF,
     LEFT_BRACE, RIGHT_BRACE,
-    STAR, DOT, COMMA, PLUS, MINUS, SLASH, SEMICOLON,
+    STAR, DOT, COMMA, PLUS, MINUS, SLASH, SLASH_SLASH, SEMICOLON,
     EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL,
     GREATER, GREATER_EQUAL, LESS, LESS_EQUAL
 
@@ -105,6 +105,7 @@ fun main(args: Array<String>) {
                 '!' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.BANG_EQUAL, TokenType.BANG))
                 '>' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.GREATER_EQUAL, TokenType.GREATER))
                 '<' -> tokenSteam.add(iterator.nextTokenMatches('=', TokenType.LESS_EQUAL, TokenType.LESS))
+                '/' -> tokenSteam.add(iterator.nextTokenMatches('/', TokenType.SLASH_SLASH, TokenType.SLASH))
                 else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
         }
