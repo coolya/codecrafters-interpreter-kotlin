@@ -75,6 +75,7 @@ fun CharIterator.nextTokenConsumesLine(possibleNext: Char, matchingType: TokenTy
         }
         return TokenLike.Token(matchingType, lexeme)
     }
+    return TokenLike.Token(noneMatching, this.current().toString())
 }
 
 fun main(args: Array<String>) {
