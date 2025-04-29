@@ -29,7 +29,7 @@ sealed class TokenLike {
 class CharIterator(private val chars: CharArray) {
     private var current = -1
     fun hasNext(): Boolean {
-        return current < chars.size
+        return current + 1 < chars.size
     }
 
     fun next(): Char? {
