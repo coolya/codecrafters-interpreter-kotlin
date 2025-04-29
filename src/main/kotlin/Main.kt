@@ -54,9 +54,7 @@ fun main(args: Array<String>) {
                 '-' -> tokenSteam.add(TokenLike.Token(TokenType.MINUS, "-"))
                 '+' -> tokenSteam.add(TokenLike.Token(TokenType.PLUS, "+"))
                 ';' -> tokenSteam.add(TokenLike.Token(TokenType.SEMICOLON, ";"))
-                '#' -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: #"))
-                '$' -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $"))
-                else -> println("UNKNOWN_CHAR: $char")
+                else -> tokenSteam.add(TokenLike.LexicalError(1, "Unexpected character: $char"))
             }
         }
     }
