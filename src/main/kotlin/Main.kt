@@ -8,7 +8,7 @@ enum class TokenType {
 
 data class Token(val type: TokenType, val lexeme: String) {
     override fun toString(): String {
-        return "${type.name} $lexeme"
+        return "${type.name} $lexeme null"
     }
 }
 
