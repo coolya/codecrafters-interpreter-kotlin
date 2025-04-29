@@ -5,13 +5,33 @@ enum class TokenType {
     LEFT_PAREN, RIGHT_PAREN,
     EOF,
     LEFT_BRACE, RIGHT_BRACE,
-    STAR, DOT, COMMA, PLUS, MINUS, SLASH, SLASH_SLASH, SEMICOLON,
+    STAR, DOT, COMMA, PLUS, MINUS, SLASH, SEMICOLON,
     EQUAL, EQUAL_EQUAL, BANG, BANG_EQUAL,
     GREATER, GREATER_EQUAL, LESS, LESS_EQUAL,
     STRING, NUMBER,
-    IDENTIFIER
-
+    IDENTIFIER,
+    AND, CLASS, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
+    PRINT, RETURN, SUPER, THIS, TRUE, VAR, WHILE,
 }
+
+val keywords = mapOf(
+    "and" to TokenType.AND,
+    "class" to TokenType.CLASS,
+    "else" to TokenType.ELSE,
+    "false" to TokenType.FALSE,
+    "fun" to TokenType.FUN,
+    "for" to TokenType.FOR,
+    "if" to TokenType.IF,
+    "nil" to TokenType.NIL,
+    "or" to TokenType.OR,
+    "print" to TokenType.PRINT,
+    "return" to TokenType.RETURN,
+    "super" to TokenType.SUPER,
+    "this" to TokenType.THIS,
+    "true" to TokenType.TRUE,
+    "var" to TokenType.VAR,
+    "while" to TokenType.WHILE,
+)
 
 sealed class TokenLike {
     data class SimpleToken(val type: TokenType, val lexeme: String) : TokenLike() {
@@ -181,7 +201,13 @@ fun lex(fileContents: String, tokenSteam: MutableList<TokenLike>) {
                         identifier += iterator.next().toString()
                     } else break
                 }
-                tokenSteam.add(TokenLike.SimpleToken(TokenType.IDENTIFIER, identifier))
+                if (keywords.containsKey(identifier)) tokenSteam.add(
+                    TokenLike.SimpleToken(
+                        keywords[identifier]!!,
+                        identifier
+                    )
+                )
+                else tokenSteam.add(TokenLike.SimpleToken(TokenType.IDENTIFIER, identifier))
             }
 
             '\t', ' ' -> continue
