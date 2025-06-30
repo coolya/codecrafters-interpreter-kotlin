@@ -48,8 +48,8 @@ object Evaluator : Expression.Visitor<Value> {
     }
 
     override fun visitGroupingExpression(expression: Expression.Grouping): Value {
-        // Not implemented yet - will be added in future tasks
-        return Value.Nil
+        // Evaluate the expression inside the parentheses
+        return expression.expression.accept(this)
     }
 
     override fun visitUnaryExpression(expression: Expression.Unary): Value {
