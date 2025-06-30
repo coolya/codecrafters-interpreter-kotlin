@@ -4,6 +4,78 @@ import EvaluationResult
 import StatementEvaluationResult
 import StatementParseResult
 
+/**
+ * Represents the result of processing a program, which can be either a list of statements or a single expression
+ */
+sealed class ProgramProcessResult<T> {
+    // Result for a single expression
+    data class SingleExpression<T>(val result: T) : ProgramProcessResult<T>()
+
+    // Result for a list of statements
+    data class MultipleStatements<T>(val results: List<T>) : ProgramProcessResult<T>()
+}
+
+/**
+ * Process a program, which can be either a list of statements or a single expression.
+ * This function handles the common logic for both parsing and evaluation.
+ *
+ * @param tokens The token stream to process
+ * @param processExpression A function that processes a single expression and returns a result of type R
+ * @param processStatement A function that processes a single statement and returns a result of type R
+ * @return A ProgramProcessResult containing either a single expression result or multiple statement results
+ */
+fun <R> processProgram(
+    tokens: List<TokenLike>,
+    processExpression: (Expression) -> R,
+    processStatement: (Statement) -> R
+): ProgramProcessResult<R> {
+    // First try to parse as a program (list of statements)
+    val statements = program(TokenIterator(tokens))
+
+    // Check for syntax errors
+    val syntaxError = statements.find { it is StatementParseResult.Error }
+
+    // If there's a syntax error about missing semicolons, try parsing as a single expression
+    if (syntaxError != null && (syntaxError as StatementParseResult.Error).message.contains("Expected ';'")) {
+        // Parse as a single expression
+        val parseResult = expression(TokenIterator(tokens))
+
+        // Handle the result based on its type
+        return when (parseResult) {
+            is ParseResult.Error -> {
+                // Log the error message and exit with error code if a syntax error occurred during parsing
+                System.err.println("Error: ${parseResult.message}")
+                exitProcess(65)
+            }
+            is ParseResult.Success -> {
+                // Process the expression and return the result
+                ProgramProcessResult.SingleExpression(processExpression(parseResult.expression))
+            }
+        }
+    } else if (syntaxError != null) {
+        // If there's a syntax error that's not about missing semicolons, report it
+        val error = syntaxError as StatementParseResult.Error
+        System.err.println("Error: ${error.message}")
+        exitProcess(65)
+    } else {
+        // Process each statement and collect the results
+        val results = statements.map { statement ->
+            when (statement) {
+                is StatementParseResult.Success -> {
+                    // Process the statement and return the result
+                    processStatement(statement.statement)
+                }
+                is StatementParseResult.Error -> {
+                    // This should not happen as we've already checked for syntax errors
+                    System.err.println("Error: ${statement.message}")
+                    exitProcess(65)
+                }
+            }
+        }
+        return ProgramProcessResult.MultipleStatements(results)
+    }
+}
+
 
 
 
@@ -75,20 +147,20 @@ fun main(args: Array<String>) {
             exitProcess(65)
         }
 
-        val parseResult = expression(TokenIterator(tokenSteam))
-
-        // Handle the result based on its type
-        when (parseResult) {
-            is ParseResult.Error -> {
-                // Log the error message and exit with error code if a syntax error occurred during parsing
-                System.err.println("Error: ${parseResult.message}")
-                exitProcess(65)
+        // Process the program using our generic function
+        val result = processProgram(
+            tokens = tokenSteam,
+            processExpression = { expr ->
+                // Print the AST for the expression
+                expr.accept(Printer).let { println(it) }
+                Unit // Return Unit as we're just printing
+            },
+            processStatement = { stmt ->
+                // Print the AST for the statement
+                stmt.accept(StatementPrinter).let { println(it) }
+                Unit // Return Unit as we're just printing
             }
-            is ParseResult.Success -> {
-                // Only print the AST if no syntax errors occurred
-                parseResult.expression.accept(Printer).let { println(it) }
-            }
-        }
+        )
 
         return
     }
@@ -100,31 +172,42 @@ fun main(args: Array<String>) {
             exitProcess(65)
         }
 
-        val parseResult = expression(TokenIterator(tokenSteam))
-
-        // Handle the result based on its type
-        when (parseResult) {
-            is ParseResult.Error -> {
-                // Log the error message and exit with error code if a syntax error occurred during parsing
-                System.err.println("Error: ${parseResult.message}")
-                exitProcess(65)
-            }
-            is ParseResult.Success -> {
+        // Process the program using our generic function
+        val result = processProgram(
+            tokens = tokenSteam,
+            processExpression = { expr ->
                 // Evaluate the expression and handle the result
-                val result = parseResult.expression.accept(Evaluator)
-                when (result) {
+                val evalResult = expr.accept(Evaluator)
+                when (evalResult) {
                     is EvaluationResult.Success -> {
                         // Print the successful result
-                        println(result.value)
+                        println(evalResult.value)
                     }
                     is EvaluationResult.Error -> {
                         // Handle runtime errors by printing to stderr and exiting with code 70
-                        System.err.println(result.message)
+                        System.err.println(evalResult.message)
                         exitProcess(70)
                     }
                 }
+                Unit // Return Unit as we're just printing
+            },
+            processStatement = { stmt ->
+                // Evaluate the statement
+                val evalResult = stmt.accept(StatementEvaluator)
+                when (evalResult) {
+                    is StatementEvaluationResult.Success -> {
+                        // For expression statements, we don't print anything
+                        // For print statements, the evaluator already prints the result
+                    }
+                    is StatementEvaluationResult.Error -> {
+                        // Handle runtime errors by printing to stderr and exiting with code 70
+                        System.err.println(evalResult.message)
+                        exitProcess(70)
+                    }
+                }
+                Unit // Return Unit as we're just evaluating
             }
-        }
+        )
 
         return
     }
@@ -136,6 +219,7 @@ fun main(args: Array<String>) {
             exitProcess(65)
         }
 
+        // For the "run" command, we don't allow single expressions without semicolons
         // Parse the program (a list of statements)
         val statements = program(TokenIterator(tokenSteam))
 
@@ -147,7 +231,7 @@ fun main(args: Array<String>) {
             exitProcess(65)
         }
 
-        // Execute each statement
+        // Process each statement
         for (statement in statements) {
             when (statement) {
                 is StatementParseResult.Success -> {

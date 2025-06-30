@@ -60,15 +60,21 @@ fun advanceToLineEnd(iterator: CharacterIterator?): CharacterIterator? {
 fun advanceUntilToken(iterator: CharacterIterator?, token: Char): Pair<String?, CharacterIterator?> {
     var current = iterator
     var result = ""
-    while (current?.char != null && current.char != '\n') {
+    var currentLine = 0
+    while (current?.char != null) {
         if (current.char == token) {
             return result to current.next()
+        } else if (current.char == '\n') {
+            // Include newline characters in the string
+            result += current.char.toString()
+            current = current.next()
+            currentLine += 1
         } else {
             result += current.char.toString()
             current = current.next()
         }
     }
-    return null to current?.next()
+    return null to current
 }
 
 fun advanceFor(iterator: CharacterIterator?, tokens: List<Char>): Pair<String, CharacterIterator?> {

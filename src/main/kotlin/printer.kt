@@ -20,3 +20,11 @@ object Printer : Expression.Visitor<String> {
     override fun visitStringLiteralExpression(expression: Expression.StringLiteral): String =
         "${expression.value.value}"
 }
+
+object StatementPrinter : Statement.Visitor<String> {
+    override fun visitPrintStatement(statement: Statement.Print): String =
+        "(print ${statement.expression.accept(Printer)})"
+
+    override fun visitExpressionStatement(statement: Statement.ExpressionStatement): String =
+        "(expr ${statement.expression.accept(Printer)})"
+}
