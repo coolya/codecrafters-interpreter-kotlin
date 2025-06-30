@@ -7,7 +7,7 @@ object Printer : Expression.Visitor<String> {
 
     override fun visitNilLiteral(literal: Expression.NilLiteral): String =
         "nil"
-
+    
     override fun visitNumberLiteralExpression(expression: Expression.NumberLiteral): String =
         "${expression.value.value}"
 

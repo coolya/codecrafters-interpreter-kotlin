@@ -32,6 +32,8 @@ fun CharacterIterator.nextTokenConsumesLine(
     return this.next() to TokenLike.SimpleToken(noneMatching, this.char.toString())
 }
 
+val SUPPORTED_COMMANDS = listOf("tokenize", "parse")
+
 fun main(args: Array<String>) {
 
     if (args.size < 2) {
@@ -42,7 +44,7 @@ fun main(args: Array<String>) {
     val command = args[0]
     val filename = args[1]
 
-    if (command != "tokenize") {
+    if (!SUPPORTED_COMMANDS.contains(command)) {
         System.err.println("Unknown command: ${command}")
         exitProcess(1)
     }
@@ -55,10 +57,19 @@ fun main(args: Array<String>) {
     } else {
         listOf(TokenLike.SimpleToken(TokenType.EOF, ""))
     }
-    println(tokenSteam.filterNot { it is TokenLike.LexicalError }.joinToString("\n"))
-    val errors = tokenSteam.filter { it is TokenLike.LexicalError }
-    System.err.println(errors.joinToString("\n"))
-    if (errors.isNotEmpty()) exitProcess(65)
+
+    if(command == "tokenize") {
+        println(tokenSteam.filterNot { it is TokenLike.LexicalError }.joinToString("\n"))
+        val errors = tokenSteam.filter { it is TokenLike.LexicalError }
+        System.err.println(errors.joinToString("\n"))
+        if (errors.isNotEmpty()) exitProcess(65)
+        return
+    }
+    if(command == "parse") {
+        val ast = primary(TokenIterator(tokenSteam))
+        ast.first.accept(Printer).let { println(it) }
+        return
+    }
 }
 
 
