@@ -94,6 +94,26 @@ object Evaluator : Expression.Visitor<Value> {
                     Value.Nil
                 }
             }
+            "==" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Boolean(left.value == right.value)
+                } else if (left is Value.String && right is Value.String) {
+                    Value.Boolean(left.value == right.value)
+                } else {
+                    // Different types are never equal
+                    Value.Boolean(false)
+                }
+            }
+            "!=" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Boolean(left.value != right.value)
+                } else if (left is Value.String && right is Value.String) {
+                    Value.Boolean(left.value != right.value)
+                } else {
+                    // Different types are always not equal
+                    Value.Boolean(true)
+                }
+            }
             else -> Value.Nil
         }
     }
