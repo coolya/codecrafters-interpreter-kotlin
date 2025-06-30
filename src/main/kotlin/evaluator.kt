@@ -29,122 +29,204 @@ sealed class Value {
     }
 }
 
-object Evaluator : Expression.Visitor<Value> {
-    override fun visitBinaryExpression(expr: Expression.Binary): Value {
-        val left = expr.left.accept(this)
-        val right = expr.right.accept(this)
+// Sealed class to represent the result of evaluation (discriminated union)
+sealed class EvaluationResult {
+    // Success case with a value
+    data class Success(val value: Value) : EvaluationResult() {
+        override fun toString(): String = value.toString()
+    }
+
+    // Error case with an error message
+    data class Error(val message: String) : EvaluationResult()
+
+    /**
+     * Apply a transformation to the value if this is a Success
+     */
+    inline fun map(transform: (Value) -> Value): EvaluationResult = when (this) {
+        is Success -> success(transform(value))
+        is Error -> this
+    }
+
+    /**
+     * Chain an operation that returns an EvaluationResult
+     */
+    inline fun flatMap(transform: (Value) -> EvaluationResult): EvaluationResult = when (this) {
+        is Success -> transform(value)
+        is Error -> this
+    }
+
+    /**
+     * Execute a block of code if this is a Success
+     */
+    inline fun onSuccess(block: (Value) -> Unit): EvaluationResult {
+        if (this is Success) {
+            block(value)
+        }
+        return this
+    }
+
+    /**
+     * Fold over the two possible cases
+     */
+    inline fun <T> fold(
+        onSuccess: (Value) -> T,
+        onError: (String) -> T
+    ): T = when (this) {
+        is Success -> onSuccess(value)
+        is Error -> onError(message)
+    }
+}
+
+/**
+ * Helper function to create a successful evaluation result
+ */
+fun success(value: Value): EvaluationResult {
+    return EvaluationResult.Success(value)
+}
+
+/**
+ * Helper function to create an error result
+ */
+fun error(message: String): EvaluationResult {
+    return EvaluationResult.Error(message)
+}
+
+object Evaluator : Expression.Visitor<EvaluationResult> {
+    override fun visitBinaryExpression(expr: Expression.Binary): EvaluationResult {
+        val leftResult = expr.left.accept(this)
+        val rightResult = expr.right.accept(this)
+
+        // If either operand evaluation resulted in an error, propagate the error
+        if (leftResult is EvaluationResult.Error) {
+            return leftResult
+        }
+        if (rightResult is EvaluationResult.Error) {
+            return rightResult
+        }
+
+        // Extract values from successful results
+        val left = (leftResult as EvaluationResult.Success).value
+        val right = (rightResult as EvaluationResult.Success).value
 
         // Handle binary operators
         return when (expr.operator) {
             "*" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Number(left.value * right.value)
+                    success(Value.Number(left.value * right.value))
                 } else {
-                    Value.Nil
+                    success(Value.Nil)
                 }
             }
             "/" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Number(left.value / right.value)
+                    success(Value.Number(left.value / right.value))
                 } else {
-                    Value.Nil
+                    success(Value.Nil)
                 }
             }
             "+" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Number(left.value + right.value)
+                    success(Value.Number(left.value + right.value))
                 } else if (left is Value.String && right is Value.String) {
-                    Value.String(left.value + right.value)
+                    success(Value.String(left.value + right.value))
                 } else {
-                    Value.Nil
+                    success(Value.Nil)
                 }
             }
             "-" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Number(left.value - right.value)
+                    success(Value.Number(left.value - right.value))
                 } else {
-                    Value.Nil
+                    success(Value.Nil)
                 }
             }
             ">" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Boolean(left.value > right.value)
+                    success(Value.Boolean(left.value > right.value))
                 } else {
-                    Value.Nil
+                    success(Value.Nil)
                 }
             }
             "<" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Boolean(left.value < right.value)
+                    success(Value.Boolean(left.value < right.value))
                 } else {
-                    Value.Nil
+                    success(Value.Nil)
                 }
             }
             ">=" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Boolean(left.value >= right.value)
+                    success(Value.Boolean(left.value >= right.value))
                 } else {
-                    Value.Nil
+                    success(Value.Nil)
                 }
             }
             "<=" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Boolean(left.value <= right.value)
+                    success(Value.Boolean(left.value <= right.value))
                 } else {
-                    Value.Nil
+                    success(Value.Nil)
                 }
             }
             "==" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Boolean(left.value == right.value)
+                    success(Value.Boolean(left.value == right.value))
                 } else if (left is Value.String && right is Value.String) {
-                    Value.Boolean(left.value == right.value)
+                    success(Value.Boolean(left.value == right.value))
                 } else {
                     // Different types are never equal
-                    Value.Boolean(false)
+                    success(Value.Boolean(false))
                 }
             }
             "!=" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    Value.Boolean(left.value != right.value)
+                    success(Value.Boolean(left.value != right.value))
                 } else if (left is Value.String && right is Value.String) {
-                    Value.Boolean(left.value != right.value)
+                    success(Value.Boolean(left.value != right.value))
                 } else {
                     // Different types are always not equal
-                    Value.Boolean(true)
+                    success(Value.Boolean(true))
                 }
             }
-            else -> Value.Nil
+            else -> success(Value.Nil)
         }
     }
 
-    override fun visitBooleanLiteral(literal: Expression.BooleanLiteral): Value {
-        return Value.Boolean(literal.value)
+    override fun visitBooleanLiteral(literal: Expression.BooleanLiteral): EvaluationResult {
+        return success(Value.Boolean(literal.value))
     }
 
-    override fun visitNilLiteral(literal: Expression.NilLiteral): Value {
-        return Value.Nil
+    override fun visitNilLiteral(literal: Expression.NilLiteral): EvaluationResult {
+        return success(Value.Nil)
     }
 
-    override fun visitNumberLiteralExpression(expression: Expression.NumberLiteral): Value {
-        return Value.Number(expression.value.value)
+    override fun visitNumberLiteralExpression(expression: Expression.NumberLiteral): EvaluationResult {
+        return success(Value.Number(expression.value.value))
     }
 
-    override fun visitGroupingExpression(expression: Expression.Grouping): Value {
+    override fun visitGroupingExpression(expression: Expression.Grouping): EvaluationResult {
         // Evaluate the expression inside the parentheses
         return expression.expression.accept(this)
     }
 
-    override fun visitUnaryExpression(expression: Expression.Unary): Value {
-        val right = expression.right.accept(this)
+    override fun visitUnaryExpression(expression: Expression.Unary): EvaluationResult {
+        val rightResult = expression.right.accept(this)
+
+        // If the operand evaluation resulted in an error, propagate the error
+        if (rightResult is EvaluationResult.Error) {
+            return rightResult
+        }
+
+        // Extract value from successful result
+        val right = (rightResult as EvaluationResult.Success).value
 
         return when (expression.operator) {
             "-" -> {
                 if (right is Value.Number) {
-                    Value.Number(-right.value)
+                    success(Value.Number(-right.value))
                 } else {
-                    // If the operand is not a number, we can't negate it
-                    Value.Nil
+                    // If the operand is not a number, return an error result
+                    error("Operand must be a number for unary operator '-'")
                 }
             }
             "!" -> {
@@ -154,13 +236,13 @@ object Evaluator : Expression.Visitor<Value> {
                     is Value.Nil -> false
                     else -> true
                 }
-                Value.Boolean(!isTruthy)
+                success(Value.Boolean(!isTruthy))
             }
-            else -> Value.Nil
+            else -> success(Value.Nil)
         }
     }
 
-    override fun visitStringLiteralExpression(expression: Expression.StringLiteral): Value {
-        return Value.String(expression.value.value)
+    override fun visitStringLiteralExpression(expression: Expression.StringLiteral): EvaluationResult {
+        return success(Value.String(expression.value.value))
     }
 }

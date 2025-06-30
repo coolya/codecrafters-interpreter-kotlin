@@ -1,5 +1,6 @@
 import java.io.File
 import kotlin.system.exitProcess
+import EvaluationResult
 
 
 
@@ -107,9 +108,19 @@ fun main(args: Array<String>) {
                 exitProcess(65)
             }
             is ParseResult.Success -> {
-                // Evaluate the expression and print the result
+                // Evaluate the expression and handle the result
                 val result = parseResult.expression.accept(Evaluator)
-                println(result)
+                when (result) {
+                    is EvaluationResult.Success -> {
+                        // Print the successful result
+                        println(result.value)
+                    }
+                    is EvaluationResult.Error -> {
+                        // Handle runtime errors by printing to stderr and exiting with code 70
+                        System.err.println(result.message)
+                        exitProcess(70)
+                    }
+                }
             }
         }
 
