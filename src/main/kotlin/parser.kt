@@ -5,14 +5,14 @@ fun recover(tokens: TokenIterator, message: String): TokenIterator? {
 }
 
 fun primary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
-    return when (tokens.token) {
+    return when (val token = tokens.token) {
         is TokenLike.SimpleToken -> {
-            when ((tokens.token as TokenLike.SimpleToken).type) {
+            when (token.type) {
                 TokenType.TRUE -> Pair(Expression.BooleanLiteral(true), tokens.next())
                 TokenType.FALSE -> Pair(Expression.BooleanLiteral(false), tokens.next())
                 TokenType.NIL -> Pair(Expression.NilLiteral(), tokens.next())
                 else -> {
-                    val message = "Unexpected token: ${tokens.token}"
+                    val message = "Unexpected token: $token"
                     val nextTokens = recover(tokens, message)
                     if (nextTokens != null) {
                         primary(nextTokens)
@@ -24,10 +24,13 @@ fun primary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
             }
         }
         is TokenLike.NumberToken -> {
-            Pair(Expression.NumberLiteral(tokens.token as TokenLike.NumberToken), tokens.next())
+            Pair(Expression.NumberLiteral(token), tokens.next())
+        }
+        is TokenLike.StringToken -> {
+            Pair(Expression.StringLiteral(token), tokens.next())
         }
         else -> {
-            val message = "Unexpected token: ${tokens.token}"
+            val message = "Unexpected token: $token"
             val nextTokens = recover(tokens, message)
             if (nextTokens != null) {
                 primary(nextTokens)

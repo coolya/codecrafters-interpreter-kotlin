@@ -6,6 +6,7 @@ sealed class Expression {
         fun visitBinaryExpression(expression: Binary): R
         fun visitBooleanLiteral(literal: BooleanLiteral): R
         fun visitNilLiteral(literal: NilLiteral): R
+        fun visitStringLiteralExpression(expression: StringLiteral): R
     }
 
     abstract fun <R> accept(visitor: Visitor<R>): R
@@ -41,6 +42,8 @@ sealed class Expression {
         override fun <R> accept(visitor: Visitor<R>): R = visitor.visitBinaryExpression(this)
     }
 
+    data class StringLiteral(val value: TokenLike.StringToken) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>): R = visitor.visitStringLiteralExpression(this)
+    }
 
 }
-
