@@ -254,6 +254,8 @@ object Evaluator : Expression.Visitor<EvaluationResult> {
                     success(Value.Boolean(left.value == right.value))
                 } else if (left is Value.String && right is Value.String) {
                     success(Value.Boolean(left.value == right.value))
+                } else if (left is Value.Boolean && right is Value.Boolean) {
+                    success(Value.Boolean(left.value == right.value))
                 } else {
                     // Different types are never equal
                     success(Value.Boolean(false))
@@ -263,6 +265,8 @@ object Evaluator : Expression.Visitor<EvaluationResult> {
                 if (left is Value.Number && right is Value.Number) {
                     success(Value.Boolean(left.value != right.value))
                 } else if (left is Value.String && right is Value.String) {
+                    success(Value.Boolean(left.value != right.value))
+                } else if (left is Value.Boolean && right is Value.Boolean) {
                     success(Value.Boolean(left.value != right.value))
                 } else {
                     // Different types are always not equal
