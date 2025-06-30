@@ -53,8 +53,28 @@ object Evaluator : Expression.Visitor<Value> {
     }
 
     override fun visitUnaryExpression(expression: Expression.Unary): Value {
-        // Not implemented yet - will be added in future tasks
-        return Value.Nil
+        val right = expression.right.accept(this)
+
+        return when (expression.operator) {
+            "-" -> {
+                if (right is Value.Number) {
+                    Value.Number(-right.value)
+                } else {
+                    // If the operand is not a number, we can't negate it
+                    Value.Nil
+                }
+            }
+            "!" -> {
+                // For truthiness/falsiness: false and nil are falsy, everything else is truthy
+                val isTruthy = when (right) {
+                    is Value.Boolean -> right.value
+                    is Value.Nil -> false
+                    else -> true
+                }
+                Value.Boolean(!isTruthy)
+            }
+            else -> Value.Nil
+        }
     }
 
     override fun visitStringLiteralExpression(expression: Expression.StringLiteral): Value {
