@@ -1,6 +1,8 @@
 import java.io.File
 import kotlin.system.exitProcess
 import EvaluationResult
+import StatementEvaluationResult
+import StatementParseResult
 
 
 
@@ -33,7 +35,7 @@ fun CharacterIterator.nextTokenConsumesLine(
     return this.next() to TokenLike.SimpleToken(noneMatching, this.char.toString())
 }
 
-val SUPPORTED_COMMANDS = listOf("tokenize", "parse", "evaluate")
+val SUPPORTED_COMMANDS = listOf("tokenize", "parse", "evaluate", "run")
 
 fun main(args: Array<String>) {
 
@@ -120,6 +122,52 @@ fun main(args: Array<String>) {
                         System.err.println(result.message)
                         exitProcess(70)
                     }
+                }
+            }
+        }
+
+        return
+    }
+
+    if(command == "run") {
+        val errors = tokenSteam.filter { it is TokenLike.LexicalError }
+        if (errors.isNotEmpty()) {
+            System.err.println(errors.joinToString("\n"))
+            exitProcess(65)
+        }
+
+        // Parse the program (a list of statements)
+        val statements = program(TokenIterator(tokenSteam))
+
+        // Check for syntax errors
+        val syntaxError = statements.find { it is StatementParseResult.Error }
+        if (syntaxError != null) {
+            val error = syntaxError as StatementParseResult.Error
+            System.err.println("Error: ${error.message}")
+            exitProcess(65)
+        }
+
+        // Execute each statement
+        for (statement in statements) {
+            when (statement) {
+                is StatementParseResult.Success -> {
+                    // Evaluate the statement
+                    val result = statement.statement.accept(StatementEvaluator)
+                    when (result) {
+                        is StatementEvaluationResult.Success -> {
+                            // Continue to the next statement
+                        }
+                        is StatementEvaluationResult.Error -> {
+                            // Handle runtime errors by printing to stderr and exiting with code 70
+                            System.err.println(result.message)
+                            exitProcess(70)
+                        }
+                    }
+                }
+                is StatementParseResult.Error -> {
+                    // This should not happen as we've already checked for syntax errors
+                    System.err.println("Error: ${statement.message}")
+                    exitProcess(65)
                 }
             }
         }

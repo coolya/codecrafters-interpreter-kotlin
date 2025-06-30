@@ -91,6 +91,67 @@ fun error(message: String): EvaluationResult {
     return EvaluationResult.Error(message)
 }
 
+// Sealed class to represent the result of evaluating a statement
+sealed class StatementEvaluationResult {
+    // Success case
+    object Success : StatementEvaluationResult()
+
+    // Error case with an error message
+    data class Error(val message: String) : StatementEvaluationResult()
+}
+
+/**
+ * Helper function to create a successful statement evaluation result
+ */
+fun statementSuccess(): StatementEvaluationResult {
+    return StatementEvaluationResult.Success
+}
+
+/**
+ * Helper function to create an error statement evaluation result
+ */
+fun statementError(message: String): StatementEvaluationResult {
+    return StatementEvaluationResult.Error(message)
+}
+
+/**
+ * Evaluator for statements
+ */
+object StatementEvaluator : Statement.Visitor<StatementEvaluationResult> {
+    override fun visitPrintStatement(statement: Statement.Print): StatementEvaluationResult {
+        // Evaluate the expression to be printed
+        val result = statement.expression.accept(Evaluator)
+
+        return when (result) {
+            is EvaluationResult.Success -> {
+                // Print the value
+                println(result.value)
+                statementSuccess()
+            }
+            is EvaluationResult.Error -> {
+                // Propagate the error
+                statementError(result.message)
+            }
+        }
+    }
+
+    override fun visitExpressionStatement(statement: Statement.ExpressionStatement): StatementEvaluationResult {
+        // Evaluate the expression
+        val result = statement.expression.accept(Evaluator)
+
+        return when (result) {
+            is EvaluationResult.Success -> {
+                // Expression statements don't produce output
+                statementSuccess()
+            }
+            is EvaluationResult.Error -> {
+                // Propagate the error
+                statementError(result.message)
+            }
+        }
+    }
+}
+
 object Evaluator : Expression.Visitor<EvaluationResult> {
     override fun visitBinaryExpression(expr: Expression.Binary): EvaluationResult {
         val leftResult = expr.left.accept(this)

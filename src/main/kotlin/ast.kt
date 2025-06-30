@@ -45,5 +45,21 @@ sealed class Expression {
     data class StringLiteral(val value: TokenLike.StringToken) : Expression() {
         override fun <R> accept(visitor: Visitor<R>): R = visitor.visitStringLiteralExpression(this)
     }
+}
 
+sealed class Statement {
+    interface Visitor<R> {
+        fun visitPrintStatement(statement: Print): R
+        fun visitExpressionStatement(statement: ExpressionStatement): R
+    }
+
+    abstract fun <R> accept(visitor: Visitor<R>): R
+
+    data class Print(val expression: Expression) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>): R = visitor.visitPrintStatement(this)
+    }
+
+    data class ExpressionStatement(val expression: Expression) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>): R = visitor.visitExpressionStatement(this)
+    }
 }
