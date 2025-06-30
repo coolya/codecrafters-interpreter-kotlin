@@ -164,28 +164,28 @@ object Evaluator : Expression.Visitor<EvaluationResult> {
                 if (left is Value.Number && right is Value.Number) {
                     success(Value.Boolean(left.value > right.value))
                 } else {
-                    success(Value.Nil)
+                    error("Runtime error: Operands must be numbers")
                 }
             }
             "<" -> {
                 if (left is Value.Number && right is Value.Number) {
                     success(Value.Boolean(left.value < right.value))
                 } else {
-                    success(Value.Nil)
+                    error("Runtime error: Operands must be numbers")
                 }
             }
             ">=" -> {
                 if (left is Value.Number && right is Value.Number) {
                     success(Value.Boolean(left.value >= right.value))
                 } else {
-                    success(Value.Nil)
+                    error("Runtime error: Operands must be numbers")
                 }
             }
             "<=" -> {
                 if (left is Value.Number && right is Value.Number) {
                     success(Value.Boolean(left.value <= right.value))
                 } else {
-                    success(Value.Nil)
+                    error("Runtime error: Operands must be numbers")
                 }
             }
             "==" -> {
