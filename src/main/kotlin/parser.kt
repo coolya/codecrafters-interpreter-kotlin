@@ -5,8 +5,13 @@ fun recover(tokens: TokenIterator, message: String): TokenIterator? {
 }
 
 fun expression(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
-    // Expression delegates to unary
-    return unary(tokens)
+    // Expression delegates to term
+    return term(tokens)
+}
+
+fun term(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+    // Term delegates to factor
+    return factor(tokens)
 }
 
 fun unary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
@@ -27,6 +32,32 @@ fun unary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
 
     // If not a unary operator, delegate to primary
     return primary(tokens)
+}
+
+fun factor(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+    // Start with a unary expression
+    var (expr, nextTokens) = unary(tokens)
+
+    // Continue as long as we find * or / operators
+    while (nextTokens != null && nextTokens.token is TokenLike.SimpleToken) {
+        val token = nextTokens.token as TokenLike.SimpleToken
+        if (token.type == TokenType.STAR || token.type == TokenType.SLASH) {
+            val operator = token.lexeme
+            val afterOperator = nextTokens.next() ?: return Pair(expr, null)
+
+            // Parse the right operand
+            val (right, afterRight) = unary(afterOperator)
+
+            // Create a binary expression
+            expr = Expression.Binary(expr, operator, right)
+            nextTokens = afterRight
+        } else {
+            // If not a multiplication or division operator, break the loop
+            break
+        }
+    }
+
+    return Pair(expr, nextTokens)
 }
 
 fun primary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
