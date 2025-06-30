@@ -1,5 +1,10 @@
 # Project Guidelines
 
+- Use the `codecrafters test` shell command that is globally available to verify changes
+- Never change files outside the `src` folder unless explicitly told to do so.
+- Do not test the program with any other means than the codecrafters test tool. 
+- Never create new test cases
+
 ## Kotlin Programming Style and Best Practices
 
 ### Code Organization

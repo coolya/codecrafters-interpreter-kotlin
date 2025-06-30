@@ -53,6 +53,8 @@ object Evaluator : Expression.Visitor<Value> {
             "+" -> {
                 if (left is Value.Number && right is Value.Number) {
                     Value.Number(left.value + right.value)
+                } else if (left is Value.String && right is Value.String) {
+                    Value.String(left.value + right.value)
                 } else {
                     Value.Nil
                 }
