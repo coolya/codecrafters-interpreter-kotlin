@@ -10,8 +10,29 @@ fun expression(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
 }
 
 fun term(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
-    // Term delegates to factor
-    return factor(tokens)
+    // Start with a factor expression
+    var (expr, nextTokens) = factor(tokens)
+
+    // Continue as long as we find + or - operators
+    while (nextTokens != null && nextTokens.token is TokenLike.SimpleToken) {
+        val token = nextTokens.token as TokenLike.SimpleToken
+        if (token.type == TokenType.PLUS || token.type == TokenType.MINUS) {
+            val operator = token.lexeme
+            val afterOperator = nextTokens.next() ?: return Pair(expr, null)
+
+            // Parse the right operand
+            val (right, afterRight) = factor(afterOperator)
+
+            // Create a binary expression
+            expr = Expression.Binary(expr, operator, right)
+            nextTokens = afterRight
+        } else {
+            // If not an addition or subtraction operator, break the loop
+            break
+        }
+    }
+
+    return Pair(expr, nextTokens)
 }
 
 fun unary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
