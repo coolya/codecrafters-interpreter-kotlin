@@ -32,7 +32,7 @@ fun CharacterIterator.nextTokenConsumesLine(
     return this.next() to TokenLike.SimpleToken(noneMatching, this.char.toString())
 }
 
-val SUPPORTED_COMMANDS = listOf("tokenize", "parse")
+val SUPPORTED_COMMANDS = listOf("tokenize", "parse", "evaluate")
 
 fun main(args: Array<String>) {
 
@@ -84,6 +84,32 @@ fun main(args: Array<String>) {
             is ParseResult.Success -> {
                 // Only print the AST if no syntax errors occurred
                 parseResult.expression.accept(Printer).let { println(it) }
+            }
+        }
+
+        return
+    }
+
+    if(command == "evaluate") {
+        val errors = tokenSteam.filter { it is TokenLike.LexicalError }
+        if (errors.isNotEmpty()) {
+            System.err.println(errors.joinToString("\n"))
+            exitProcess(65)
+        }
+
+        val parseResult = expression(TokenIterator(tokenSteam))
+
+        // Handle the result based on its type
+        when (parseResult) {
+            is ParseResult.Error -> {
+                // Log the error message and exit with error code if a syntax error occurred during parsing
+                System.err.println("Error: ${parseResult.message}")
+                exitProcess(65)
+            }
+            is ParseResult.Success -> {
+                // Evaluate the expression and print the result
+                val result = parseResult.expression.accept(Evaluator)
+                println(result)
             }
         }
 
