@@ -40,6 +40,16 @@ Use maven for any compilation-related tasks.
     - Use result-returning functions (like `Pair<Result, NextState>`) rather than exceptions for expected error conditions
     - Reserve exceptions for exceptional conditions
 
+4. **Code Comments**
+   - Avoid comments that explain what simple code does or that state the obvious like:
+   ```
+   // check if a is greater 5
+   if( a > 5)
+   ```
+   - Use code comments to state why code exists.
+   - Use code comments to explain none obvious aspects of the code, especially none-functional ones.
+   - Use code comments to explain edge cases or performance optimizations. 
+
 ### Design Patterns
 
 1. **Visitor Pattern**

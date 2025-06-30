@@ -5,7 +5,27 @@ fun recover(tokens: TokenIterator, message: String): TokenIterator? {
 }
 
 fun expression(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
-    // For now, expression just delegates to primary
+    // Expression delegates to unary
+    return unary(tokens)
+}
+
+fun unary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+    // Check if the current token is a unary operator (! or -)
+    if (tokens.token is TokenLike.SimpleToken) {
+        val token = tokens.token as TokenLike.SimpleToken
+        if (token.type == TokenType.BANG || token.type == TokenType.MINUS) {
+            val operator = token.lexeme
+            val nextTokens = tokens.next() ?: return Pair(Expression.NilLiteral(), null)
+
+            // Parse the right operand recursively
+            val (right, afterRight) = unary(nextTokens)
+
+            // Create a unary expression
+            return Pair(Expression.Unary(operator, right), afterRight)
+        }
+    }
+
+    // If not a unary operator, delegate to primary
     return primary(tokens)
 }
 
