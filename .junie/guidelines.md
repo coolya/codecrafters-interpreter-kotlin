@@ -50,8 +50,15 @@ Use maven for any compilation-related tasks.
     - Use the iterator pattern with immutable state (as in `TokenIterator`)
     - Return new instances rather than mutating existing ones
 
+## Testing
+
+- Do not generate any test cases or test files yourself. 
+- Rely on codecrafters to verify the work.
+
 ## Development Workflow
 - Use the maven target compile for building the project.
 - Always build the project before a task is considered completed
 - Always fix compilation errors
 - After building the project verify the results using the globally installed `codecrafters test` shell command. 
+- Separate behavioral and structural changes. 
+- If structural and behavioral changes are required, first change the structure. 

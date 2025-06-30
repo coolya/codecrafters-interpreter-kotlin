@@ -66,11 +66,8 @@ fun main(args: Array<String>) {
         return
     }
     if(command == "parse") {
-        val ast = primary(TokenIterator(tokenSteam))
+        val ast = expression(TokenIterator(tokenSteam))
         ast.first.accept(Printer).let { println(it) }
         return
     }
 }
-
-
-
