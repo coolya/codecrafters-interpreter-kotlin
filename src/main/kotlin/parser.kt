@@ -1,15 +1,74 @@
-fun recover(tokens: TokenIterator, message: String): TokenIterator? {
-    System.err.println("Error: $message")
-    // Skip the current token and return the next one
-    return tokens.next()
+// Sealed class to represent the result of parsing (discriminated union)
+sealed class ParseResult {
+    // Success case with an expression and next tokens
+    data class Success(val expression: Expression, val nextTokens: TokenIterator?) : ParseResult()
+
+    // Error case with an error message and next tokens
+    data class Error(val message: String, val nextTokens: TokenIterator?) : ParseResult()
+
+    /**
+     * Apply a transformation to the expression if this is a Success
+     */
+    inline fun map(transform: (Expression) -> Expression): ParseResult = when (this) {
+        is Success -> success(transform(expression), nextTokens)
+        is Error -> this
+    }
+
+    /**
+     * Chain an operation that returns a ParseResult
+     */
+    inline fun flatMap(transform: (Expression, TokenIterator?) -> ParseResult): ParseResult = when (this) {
+        is Success -> transform(expression, nextTokens)
+        is Error -> this
+    }
+
+    /**
+     * Execute a block of code if this is a Success
+     */
+    inline fun onSuccess(block: (Expression, TokenIterator?) -> Unit): ParseResult {
+        if (this is Success) {
+            block(expression, nextTokens)
+        }
+        return this
+    }
+
+    /**
+     * Fold over the two possible cases
+     */
+    inline fun <T> fold(
+        onSuccess: (Expression, TokenIterator?) -> T,
+        onError: (String, TokenIterator?) -> T
+    ): T = when (this) {
+        is Success -> onSuccess(expression, nextTokens)
+        is Error -> onError(message, nextTokens)
+    }
 }
 
-fun expression(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+/**
+ * Helper function to create a successful parse result
+ */
+fun success(expression: Expression, nextTokens: TokenIterator?): ParseResult {
+    return ParseResult.Success(expression, nextTokens)
+}
+
+/**
+ * Helper function to create an error result
+ */
+fun error(message: String, tokens: TokenIterator?): ParseResult {
+    return ParseResult.Error(message, tokens)
+}
+
+fun recover(tokens: TokenIterator, message: String): ParseResult {
+    // Skip the current token and return an error result
+    return error(message, tokens.next())
+}
+
+fun expression(tokens: TokenIterator): ParseResult {
     // Expression delegates to equality
     return equality(tokens)
 }
 
-fun equality(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+fun equality(tokens: TokenIterator): ParseResult {
     // Handle equality operators
     return parseBinaryExpression(
         tokens,
@@ -18,7 +77,7 @@ fun equality(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
     )
 }
 
-fun comparison(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+fun comparison(tokens: TokenIterator): ParseResult {
     // Handle comparison operators
     return parseBinaryExpression(
         tokens,
@@ -32,35 +91,56 @@ fun comparison(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
  */
 fun parseBinaryExpression(
     tokens: TokenIterator,
-    parseOperand: (TokenIterator) -> Pair<Expression, TokenIterator?>,
+    parseOperand: (TokenIterator) -> ParseResult,
     operatorTypes: List<TokenType>
-): Pair<Expression, TokenIterator?> {
+): ParseResult {
     // Start with parsing the left operand
-    var (expr, nextTokens) = parseOperand(tokens)
-
-    // Continue as long as we find operators of the specified types
-    while (nextTokens != null && nextTokens.token is TokenLike.SimpleToken) {
-        val token = nextTokens.token as TokenLike.SimpleToken
-        if (token.type in operatorTypes) {
-            val operator = token.lexeme
-            val afterOperator = nextTokens.next() ?: return Pair(expr, null)
-
-            // Parse the right operand
-            val (right, afterRight) = parseOperand(afterOperator)
-
-            // Create a binary expression
-            expr = Expression.Binary(expr, operator, right)
-            nextTokens = afterRight
-        } else {
-            // If not one of the specified operators, break the loop
-            break
-        }
+    return parseOperand(tokens).flatMap { leftExpr, nextTokens ->
+        // Use a recursive helper function to process operators without mutable variables
+        parseBinaryExpressionRec(leftExpr, nextTokens, parseOperand, operatorTypes)
     }
-
-    return Pair(expr, nextTokens)
 }
 
-fun term(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+/**
+ * Recursive helper function to parse binary expressions without mutable variables
+ */
+private fun parseBinaryExpressionRec(
+    expr: Expression,
+    tokens: TokenIterator?,
+    parseOperand: (TokenIterator) -> ParseResult,
+    operatorTypes: List<TokenType>
+): ParseResult {
+    // Base case: no more tokens or not a simple token
+    if (tokens == null || tokens.token !is TokenLike.SimpleToken) {
+        return success(expr, tokens)
+    }
+
+    val token = tokens.token as TokenLike.SimpleToken
+
+    // If not one of the specified operators, we're done
+    if (token.type !in operatorTypes) {
+        return success(expr, tokens)
+    }
+
+    val operator = token.lexeme
+    val afterOperator = tokens.next() ?: return success(expr, null)
+
+    // Parse the right operand
+    return parseOperand(afterOperator).fold(
+        onSuccess = { rightExpr, rightNextTokens ->
+            // Create a new binary expression
+            val newExpr = Expression.Binary(expr, operator, rightExpr)
+            // Recursively process the next operator
+            parseBinaryExpressionRec(newExpr, rightNextTokens, parseOperand, operatorTypes)
+        },
+        onError = { message, errorTokens ->
+            // If there's an error, return it immediately
+            error(message, errorTokens)
+        }
+    )
+}
+
+fun term(tokens: TokenIterator): ParseResult {
     // Handle addition and subtraction operators
     return parseBinaryExpression(
         tokens,
@@ -69,19 +149,19 @@ fun term(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
     )
 }
 
-fun unary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+fun unary(tokens: TokenIterator): ParseResult {
     // Check if the current token is a unary operator (! or -)
     if (tokens.token is TokenLike.SimpleToken) {
         val token = tokens.token as TokenLike.SimpleToken
         if (token.type == TokenType.BANG || token.type == TokenType.MINUS) {
             val operator = token.lexeme
-            val nextTokens = tokens.next() ?: return Pair(Expression.NilLiteral(), null)
+            val nextTokens = tokens.next() ?: return success(Expression.NilLiteral(), null)
 
-            // Parse the right operand recursively
-            val (right, afterRight) = unary(nextTokens)
-
-            // Create a unary expression
-            return Pair(Expression.Unary(operator, right), afterRight)
+            // Parse the right operand recursively and map the result
+            return unary(nextTokens).map { rightExpr ->
+                // Create a unary expression
+                Expression.Unary(operator, rightExpr)
+            }
         }
     }
 
@@ -89,7 +169,7 @@ fun unary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
     return primary(tokens)
 }
 
-fun factor(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+fun factor(tokens: TokenIterator): ParseResult {
     // Handle multiplication and division operators
     return parseBinaryExpression(
         tokens,
@@ -98,65 +178,49 @@ fun factor(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
     )
 }
 
-fun primary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+fun primary(tokens: TokenIterator): ParseResult {
     return when (val token = tokens.token) {
         is TokenLike.SimpleToken -> {
             when (token.type) {
-                TokenType.TRUE -> Pair(Expression.BooleanLiteral(true), tokens.next())
-                TokenType.FALSE -> Pair(Expression.BooleanLiteral(false), tokens.next())
-                TokenType.NIL -> Pair(Expression.NilLiteral(), tokens.next())
+                TokenType.TRUE -> success(Expression.BooleanLiteral(true), tokens.next())
+                TokenType.FALSE -> success(Expression.BooleanLiteral(false), tokens.next())
+                TokenType.NIL -> success(Expression.NilLiteral(), tokens.next())
                 TokenType.LEFT_PAREN -> {
                     // Handle parenthesized expressions
-                    val nextTokens = tokens.next() ?: return Pair(Expression.NilLiteral(), null)
+                    val nextTokens = tokens.next() ?: return success(Expression.NilLiteral(), null)
 
-                    // Parse the expression inside the parentheses
-                    val (expr, afterExpr) = expression(nextTokens)
-                    if (afterExpr == null) {
-                        return Pair(Expression.NilLiteral(), null)
-                    }
+                    // Parse the expression inside the parentheses and handle the result
+                    expression(nextTokens).flatMap { expr, afterExpr ->
+                        if (afterExpr == null) {
+                            return success(Expression.NilLiteral(), null)
+                        }
 
-                    // Check for the closing parenthesis
-                    if (afterExpr.token is TokenLike.SimpleToken &&
-                        (afterExpr.token as TokenLike.SimpleToken).type == TokenType.RIGHT_PAREN) {
-                        // Return the grouped expression with the iterator after the closing parenthesis
-                        Pair(Expression.Grouping(expr), afterExpr.next())
-                    } else {
-                        val message = "Expected ')' after expression"
-                        val recoveredTokens = recover(afterExpr, message)
-                        if (recoveredTokens != null) {
-                            primary(recoveredTokens)
+                        // Check for the closing parenthesis
+                        if (afterExpr.token is TokenLike.SimpleToken &&
+                            (afterExpr.token as TokenLike.SimpleToken).type == TokenType.RIGHT_PAREN) {
+                            // Return the grouped expression with the iterator after the closing parenthesis
+                            success(Expression.Grouping(expr), afterExpr.next())
                         } else {
-                            Pair(Expression.NilLiteral(), null)
+                            val message = "Expected ')' after expression"
+                            recover(afterExpr, message)
                         }
                     }
                 }
                 else -> {
                     val message = "Unexpected token: $token"
-                    val nextTokens = recover(tokens, message)
-                    if (nextTokens != null) {
-                        primary(nextTokens)
-                    } else {
-                        // If we can't recover (end of tokens), return a nil literal as a fallback
-                        Pair(Expression.NilLiteral(), null)
-                    }
+                    recover(tokens, message)
                 }
             }
         }
         is TokenLike.NumberToken -> {
-            Pair(Expression.NumberLiteral(token), tokens.next())
+            success(Expression.NumberLiteral(token), tokens.next())
         }
         is TokenLike.StringToken -> {
-            Pair(Expression.StringLiteral(token), tokens.next())
+            success(Expression.StringLiteral(token), tokens.next())
         }
         else -> {
             val message = "Unexpected token: $token"
-            val nextTokens = recover(tokens, message)
-            if (nextTokens != null) {
-                primary(nextTokens)
-            } else {
-                // If we can't recover (end of tokens), return a nil literal as a fallback
-                Pair(Expression.NilLiteral(), null)
-            }
+            recover(tokens, message)
         }
     }
 }

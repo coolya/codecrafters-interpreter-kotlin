@@ -66,8 +66,27 @@ fun main(args: Array<String>) {
         return
     }
     if(command == "parse") {
-        val ast = expression(TokenIterator(tokenSteam))
-        ast.first.accept(Printer).let { println(it) }
+        val errors = tokenSteam.filter { it is TokenLike.LexicalError }
+        if (errors.isNotEmpty()) {
+            System.err.println(errors.joinToString("\n"))
+            exitProcess(65)
+        }
+
+        val parseResult = expression(TokenIterator(tokenSteam))
+
+        // Handle the result based on its type
+        when (parseResult) {
+            is ParseResult.Error -> {
+                // Log the error message and exit with error code if a syntax error occurred during parsing
+                System.err.println("Error: ${parseResult.message}")
+                exitProcess(65)
+            }
+            is ParseResult.Success -> {
+                // Only print the AST if no syntax errors occurred
+                parseResult.expression.accept(Printer).let { println(it) }
+            }
+        }
+
         return
     }
 }
