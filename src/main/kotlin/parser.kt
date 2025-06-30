@@ -5,8 +5,17 @@ fun recover(tokens: TokenIterator, message: String): TokenIterator? {
 }
 
 fun expression(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
-    // Expression delegates to comparison
-    return comparison(tokens)
+    // Expression delegates to equality
+    return equality(tokens)
+}
+
+fun equality(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+    // Handle equality operators
+    return parseBinaryExpression(
+        tokens,
+        ::comparison,
+        listOf(TokenType.EQUAL_EQUAL, TokenType.BANG_EQUAL)
+    )
 }
 
 fun comparison(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
