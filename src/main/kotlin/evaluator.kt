@@ -31,8 +31,27 @@ sealed class Value {
 
 object Evaluator : Expression.Visitor<Value> {
     override fun visitBinaryExpression(expr: Expression.Binary): Value {
-        // Not implemented yet - will be added in future tasks
-        return Value.Nil
+        val left = expr.left.accept(this)
+        val right = expr.right.accept(this)
+
+        // Handle multiplication and division
+        return when (expr.operator) {
+            "*" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Number(left.value * right.value)
+                } else {
+                    Value.Nil
+                }
+            }
+            "/" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Number(left.value / right.value)
+                } else {
+                    Value.Nil
+                }
+            }
+            else -> Value.Nil
+        }
     }
 
     override fun visitBooleanLiteral(literal: Expression.BooleanLiteral): Value {

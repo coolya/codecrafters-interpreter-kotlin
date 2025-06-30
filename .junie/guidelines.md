@@ -1,7 +1,5 @@
 # Project Guidelines
 
-Use maven for any compilation-related tasks. 
-
 ## Kotlin Programming Style and Best Practices
 
 ### Code Organization
@@ -62,12 +60,12 @@ Use maven for any compilation-related tasks.
 
 ## Testing
 
-- Do not generate any test cases or test files yourself. 
-- Rely on codecrafters to verify the work.
+- Never create test files and run the program with it
+- Always rely on codecrafters to verify the work.
 
 ## Development Workflow
 - Use the maven target compile for building the project.
-- Always build the project before a task is considered completed
+- Always validate the project using codecrafters test and never build the project.
 - Always fix compilation errors
 - After building the project verify the results using the globally installed `codecrafters test` shell command. 
 - Separate behavioral and structural changes. 

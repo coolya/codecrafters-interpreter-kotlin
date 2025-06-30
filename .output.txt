@@ -1,0 +1,1370 @@
+Initiating test run...
+⏳ Turbo test runners busy. You are in queue.
+Upgrade to skip the wait: https://codecrafters.io/turbo
+Running tests. Logs should appear shortly...
+[compile] [INFO] Scanning for projects...
+[compile] [INFO]
+[compile] [INFO] -------------< io.codecrafters:build-your-own-interpreter >-------------
+[compile] [INFO] Building build-your-own-interpreter 1.0
+[compile] [INFO]   from pom.xml
+[compile] [INFO] --------------------------------[ jar ]---------------------------------
+[compile] [INFO]
+[compile] [INFO] --- resources:3.3.1:resources (default-resources) @ build-your-own-interpreter ---
+[compile] [INFO] skip non existing resourceDirectory /app/src/main/resources
+[compile] [INFO]
+[compile] [INFO] --- compiler:3.13.0:compile (default-compile) @ build-your-own-interpreter ---
+[compile] [INFO] Nothing to compile - all classes are up to date.
+[compile] [INFO]
+[compile] [INFO] --- kotlin:2.0.0:compile (compile) @ build-your-own-interpreter ---
+[compile] [INFO]
+[compile] [INFO] --- resources:3.3.1:testResources (default-testResources) @ build-your-own-interpreter ---
+[compile] [INFO] skip non existing resourceDirectory /app/src/test/resources
+[compile] [INFO]
+[compile] [INFO] --- compiler:3.13.0:testCompile (default-testCompile) @ build-your-own-interpreter ---
+[compile] [INFO] No sources to compile
+[compile] [INFO]
+[compile] [INFO] --- surefire:3.2.5:test (default-test) @ build-your-own-interpreter ---
+[compile] [INFO] No tests to run.
+[compile] [INFO]
+[compile] [INFO] --- jar:3.4.1:jar (default-jar) @ build-your-own-interpreter ---
+[compile] [INFO] Building jar: /app/target/build-your-own-interpreter-1.0.jar
+[compile] [INFO]
+[compile] [INFO] --- assembly:3.7.1:single (make-assembly) @ build-your-own-interpreter ---
+[compile] [INFO] Building jar: /tmp/codecrafters-build-dir/build-your-own-interpreter.jar
+[compile] [WARNING] Configuration option 'appendAssemblyId' is set to false.
+[compile] Instead of attaching the assembly file: /tmp/codecrafters-build-dir/build-your-own-interpreter.jar, it will become the file for main project artifact.
+[compile] NOTE: If multiple descriptors or descriptor-formats are provided for this project, the value of this file will be non-deterministic!
+[compile] [WARNING] Replacing pre-existing project main-artifact file: /app/target/build-your-own-interpreter-1.0.jar
+[compile] with assembly file: /tmp/codecrafters-build-dir/build-your-own-interpreter.jar
+[compile] [INFO] ------------------------------------------------------------------------
+[compile] [INFO] BUILD SUCCESS
+[compile] [INFO] ------------------------------------------------------------------------
+[compile] [INFO] Total time:  13.569 s
+[compile] [INFO] Finished at: 2025-06-30T19:34:12Z
+[compile] [INFO] ------------------------------------------------------------------------
+[compile] Moved ./.codecrafters/run.sh → ./your_program.sh
+[compile] Compilation successful.
+[tester::#BP3] Running tests for Stage #BP3 (Evaluating Expressions - Arithmetic Operators (1/2))
+[tester::#BP3] [test-1] Running test case: 1
+[tester::#BP3] [test-1] Writing contents to ./test.lox:
+[tester::#BP3] [test-1.lox] 55 * 74
+[tester::#BP3] [test-1] $ ./your_program.sh evaluate test.lox
+[your_program] 4070
+[tester::#BP3] [test-1] ✓ 1 line(s) match on stdout
+[tester::#BP3] [test-1] ✓ Received exit code 0.
+[tester::#BP3] [test-2] Running test case: 2
+[tester::#BP3] [test-2] Writing contents to ./test.lox:
+[tester::#BP3] [test-2.lox] 56 / 5
+[tester::#BP3] [test-2] $ ./your_program.sh evaluate test.lox
+[your_program] 11.2
+[tester::#BP3] [test-2] ✓ 1 line(s) match on stdout
+[tester::#BP3] [test-2] ✓ Received exit code 0.
+[tester::#BP3] [test-3] Running test case: 3
+[tester::#BP3] [test-3] Writing contents to ./test.lox:
+[tester::#BP3] [test-3.lox] 7 * 2 / 7 / 1
+[tester::#BP3] [test-3] $ ./your_program.sh evaluate test.lox
+[your_program] 2
+[tester::#BP3] [test-3] ✓ 1 line(s) match on stdout
+[tester::#BP3] [test-3] ✓ Received exit code 0.
+[tester::#BP3] [test-4] Running test case: 4
+[tester::#BP3] [test-4] Writing contents to ./test.lox:
+[tester::#BP3] [test-4.lox] (18 * 2 / (3 * 6))
+[tester::#BP3] [test-4] $ ./your_program.sh evaluate test.lox
+[your_program] 2
+[tester::#BP3] [test-4] ✓ 1 line(s) match on stdout
+[tester::#BP3] [test-4] ✓ Received exit code 0.
+[tester::#BP3] Test passed.
+[tester::#DC1] Running tests for Stage #DC1 (Evaluating Expressions - Unary Operators: Negation & Not)
+[tester::#DC1] [test-1] Running test case: 1
+[tester::#DC1] [test-1] Writing contents to ./test.lox:
+[tester::#DC1] [test-1.lox] -92
+[tester::#DC1] [test-1] $ ./your_program.sh evaluate test.lox
+[your_program] -92
+[tester::#DC1] [test-1] ✓ 1 line(s) match on stdout
+[tester::#DC1] [test-1] ✓ Received exit code 0.
+[tester::#DC1] [test-2] Running test case: 2
+[tester::#DC1] [test-2] Writing contents to ./test.lox:
+[tester::#DC1] [test-2.lox] !false
+[tester::#DC1] [test-2] $ ./your_program.sh evaluate test.lox
+[your_program] true
+[tester::#DC1] [test-2] ✓ 1 line(s) match on stdout
+[tester::#DC1] [test-2] ✓ Received exit code 0.
+[tester::#DC1] [test-3] Running test case: 3
+[tester::#DC1] [test-3] Writing contents to ./test.lox:
+[tester::#DC1] [test-3.lox] !nil
+[tester::#DC1] [test-3] $ ./your_program.sh evaluate test.lox
+[your_program] true
+[tester::#DC1] [test-3] ✓ 1 line(s) match on stdout
+[tester::#DC1] [test-3] ✓ Received exit code 0.
+[tester::#DC1] [test-4] Running test case: 4
+[tester::#DC1] [test-4] Writing contents to ./test.lox:
+[tester::#DC1] [test-4.lox] (!!59)
+[tester::#DC1] [test-4] $ ./your_program.sh evaluate test.lox
+[your_program] true
+[tester::#DC1] [test-4] ✓ 1 line(s) match on stdout
+[tester::#DC1] [test-4] ✓ Received exit code 0.
+[tester::#DC1] Test passed.
+[tester::#OQ9] Running tests for Stage #OQ9 (Evaluating Expressions - Parentheses)
+[tester::#OQ9] [test-1] Running test case: 1
+[tester::#OQ9] [test-1] Writing contents to ./test.lox:
+[tester::#OQ9] [test-1.lox] (true)
+[tester::#OQ9] [test-1] $ ./your_program.sh evaluate test.lox
+[your_program] true
+[tester::#OQ9] [test-1] ✓ 1 line(s) match on stdout
+[tester::#OQ9] [test-1] ✓ Received exit code 0.
+[tester::#OQ9] [test-2] Running test case: 2
+[tester::#OQ9] [test-2] Writing contents to ./test.lox:
+[tester::#OQ9] [test-2.lox] (75)
+[tester::#OQ9] [test-2] $ ./your_program.sh evaluate test.lox
+[your_program] 75
+[tester::#OQ9] [test-2] ✓ 1 line(s) match on stdout
+[tester::#OQ9] [test-2] ✓ Received exit code 0.
+[tester::#OQ9] [test-3] Running test case: 3
+[tester::#OQ9] [test-3] Writing contents to ./test.lox:
+[tester::#OQ9] [test-3.lox] ("foo hello")
+[tester::#OQ9] [test-3] $ ./your_program.sh evaluate test.lox
+[your_program] foo hello
+[tester::#OQ9] [test-3] ✓ 1 line(s) match on stdout
+[tester::#OQ9] [test-3] ✓ Received exit code 0.
+[tester::#OQ9] [test-4] Running test case: 4
+[tester::#OQ9] [test-4] Writing contents to ./test.lox:
+[tester::#OQ9] [test-4.lox] ((false))
+[tester::#OQ9] [test-4] $ ./your_program.sh evaluate test.lox
+[your_program] false
+[tester::#OQ9] [test-4] ✓ 1 line(s) match on stdout
+[tester::#OQ9] [test-4] ✓ Received exit code 0.
+[tester::#OQ9] Test passed.
+[tester::#LV1] Running tests for Stage #LV1 (Evaluating Expressions - Literals: Strings & Numbers)
+[tester::#LV1] [test-1] Running test case: 1
+[tester::#LV1] [test-1] Writing contents to ./test.lox:
+[tester::#LV1] [test-1.lox] 68
+[tester::#LV1] [test-1] $ ./your_program.sh evaluate test.lox
+[your_program] 68
+[tester::#LV1] [test-1] ✓ 1 line(s) match on stdout
+[tester::#LV1] [test-1] ✓ Received exit code 0.
+[tester::#LV1] [test-2] Running test case: 2
+[tester::#LV1] [test-2] Writing contents to ./test.lox:
+[tester::#LV1] [test-2.lox] 45.60
+[tester::#LV1] [test-2] $ ./your_program.sh evaluate test.lox
+[your_program] 45.6
+[tester::#LV1] [test-2] ✓ 1 line(s) match on stdout
+[tester::#LV1] [test-2] ✓ Received exit code 0.
+[tester::#LV1] [test-3] Running test case: 3
+[tester::#LV1] [test-3] Writing contents to ./test.lox:
+[tester::#LV1] [test-3.lox] "baz quz"
+[tester::#LV1] [test-3] $ ./your_program.sh evaluate test.lox
+[your_program] baz quz
+[tester::#LV1] [test-3] ✓ 1 line(s) match on stdout
+[tester::#LV1] [test-3] ✓ Received exit code 0.
+[tester::#LV1] [test-4] Running test case: 4
+[tester::#LV1] [test-4] Writing contents to ./test.lox:
+[tester::#LV1] [test-4.lox] "93"
+[tester::#LV1] [test-4] $ ./your_program.sh evaluate test.lox
+[your_program] 93
+[tester::#LV1] [test-4] ✓ 1 line(s) match on stdout
+[tester::#LV1] [test-4] ✓ Received exit code 0.
+[tester::#LV1] Test passed.
+[tester::#IZ6] Running tests for Stage #IZ6 (Evaluating Expressions - Literals: Booleans & Nil)
+[tester::#IZ6] [test-1] Running test case: 1
+[tester::#IZ6] [test-1] Writing contents to ./test.lox:
+[tester::#IZ6] [test-1.lox] true
+[tester::#IZ6] [test-1] $ ./your_program.sh evaluate test.lox
+[your_program] true
+[tester::#IZ6] [test-1] ✓ 1 line(s) match on stdout
+[tester::#IZ6] [test-1] ✓ Received exit code 0.
+[tester::#IZ6] [test-2] Running test case: 2
+[tester::#IZ6] [test-2] Writing contents to ./test.lox:
+[tester::#IZ6] [test-2.lox] false
+[tester::#IZ6] [test-2] $ ./your_program.sh evaluate test.lox
+[your_program] false
+[tester::#IZ6] [test-2] ✓ 1 line(s) match on stdout
+[tester::#IZ6] [test-2] ✓ Received exit code 0.
+[tester::#IZ6] [test-3] Running test case: 3
+[tester::#IZ6] [test-3] Writing contents to ./test.lox:
+[tester::#IZ6] [test-3.lox] nil
+[tester::#IZ6] [test-3] $ ./your_program.sh evaluate test.lox
+[your_program] nil
+[tester::#IZ6] [test-3] ✓ 1 line(s) match on stdout
+[tester::#IZ6] [test-3] ✓ Received exit code 0.
+[tester::#IZ6] Test passed.
+[tester::#WZ8] Running tests for Stage #WZ8 (Parsing Expressions - Syntactic errors)
+[tester::#WZ8] [test-1] Running test case: 1
+[tester::#WZ8] [test-1] Writing contents to ./test.lox:
+[tester::#WZ8] [test-1.lox] "quz
+[tester::#WZ8] [test-1] $ ./your_program.sh parse test.lox
+[your_program] [line 1] Error: Unterminated string.
+[tester::#WZ8] [test-1] ✓ 1 line(s) match on stdout
+[tester::#WZ8] [test-1] ✓ Received exit code 65.
+[tester::#WZ8] [test-2] Running test case: 2
+[tester::#WZ8] [test-2] Writing contents to ./test.lox:
+[tester::#WZ8] [test-2.lox] (foo
+[tester::#WZ8] [test-2] $ ./your_program.sh parse test.lox
+[your_program] Error: Unexpected token: IDENTIFIER foo null
+[tester::#WZ8] [test-2] ✓ 1 line(s) match on stdout
+[tester::#WZ8] [test-2] ✓ Received exit code 65.
+[tester::#WZ8] [test-3] Running test case: 3
+[tester::#WZ8] [test-3] Writing contents to ./test.lox:
+[tester::#WZ8] [test-3.lox] (72 +)
+[tester::#WZ8] [test-3] $ ./your_program.sh parse test.lox
+[your_program] Error: Unexpected token: RIGHT_PAREN ) null
+[tester::#WZ8] [test-3] ✓ 1 line(s) match on stdout
+[tester::#WZ8] [test-3] ✓ Received exit code 65.
+[tester::#WZ8] [test-4] Running test case: 4
+[tester::#WZ8] [test-4] Writing contents to ./test.lox:
+[tester::#WZ8] [test-4.lox] +
+[tester::#WZ8] [test-4] $ ./your_program.sh parse test.lox
+[your_program] Error: Unexpected token: PLUS + null
+[tester::#WZ8] [test-4] ✓ 1 line(s) match on stdout
+[tester::#WZ8] [test-4] ✓ Received exit code 65.
+[tester::#WZ8] Test passed.
+[tester::#HT8] Running tests for Stage #HT8 (Parsing Expressions - Equality operators)
+[tester::#HT8] [test-1] Running test case: 1
+[tester::#HT8] [test-1] Writing contents to ./test.lox:
+[tester::#HT8] [test-1.lox] "hello"!="bar"
+[tester::#HT8] [test-1] $ ./your_program.sh parse test.lox
+[your_program] (!= hello bar)
+[tester::#HT8] [test-1] ✓ 1 line(s) match on stdout
+[tester::#HT8] [test-1] ✓ Received exit code 0.
+[tester::#HT8] [test-2] Running test case: 2
+[tester::#HT8] [test-2] Writing contents to ./test.lox:
+[tester::#HT8] [test-2.lox] "hello" == "hello"
+[tester::#HT8] [test-2] $ ./your_program.sh parse test.lox
+[your_program] (== hello hello)
+[tester::#HT8] [test-2] ✓ 1 line(s) match on stdout
+[tester::#HT8] [test-2] ✓ Received exit code 0.
+[tester::#HT8] [test-3] Running test case: 3
+[tester::#HT8] [test-3] Writing contents to ./test.lox:
+[tester::#HT8] [test-3.lox] 55 == 29
+[tester::#HT8] [test-3] $ ./your_program.sh parse test.lox
+[your_program] (== 55.0 29.0)
+[tester::#HT8] [test-3] ✓ 1 line(s) match on stdout
+[tester::#HT8] [test-3] ✓ Received exit code 0.
+[tester::#HT8] [test-4] Running test case: 4
+[tester::#HT8] [test-4] Writing contents to ./test.lox:
+[tester::#HT8] [test-4.lox] (25 != 71) == ((-60 + 26) >= (48 * 59))
+[tester::#HT8] [test-4] $ ./your_program.sh parse test.lox
+[your_program] (== (group (!= 25.0 71.0)) (group (>= (group (+ (- 60.0) 26.0)) (group (* 48.0 59.0)))))
+[tester::#HT8] [test-4] ✓ 1 line(s) match on stdout
+[tester::#HT8] [test-4] ✓ Received exit code 0.
+[tester::#HT8] Test passed.
+[tester::#UH4] Running tests for Stage #UH4 (Parsing Expressions - Comparison operators)
+[tester::#UH4] [test-1] Running test case: 1
+[tester::#UH4] [test-1] Writing contents to ./test.lox:
+[tester::#UH4] [test-1.lox] 13 > -23
+[tester::#UH4] [test-1] $ ./your_program.sh parse test.lox
+[your_program] (> 13.0 (- 23.0))
+[tester::#UH4] [test-1] ✓ 1 line(s) match on stdout
+[tester::#UH4] [test-1] ✓ Received exit code 0.
+[tester::#UH4] [test-2] Running test case: 2
+[tester::#UH4] [test-2] Writing contents to ./test.lox:
+[tester::#UH4] [test-2.lox] 36 <= 49
+[tester::#UH4] [test-2] $ ./your_program.sh parse test.lox
+[your_program] (<= 36.0 49.0)
+[tester::#UH4] [test-2] ✓ 1 line(s) match on stdout
+[tester::#UH4] [test-2] ✓ Received exit code 0.
+[tester::#UH4] [test-3] Running test case: 3
+[tester::#UH4] [test-3] Writing contents to ./test.lox:
+[tester::#UH4] [test-3.lox] 13 < 49 < 85
+[tester::#UH4] [test-3] $ ./your_program.sh parse test.lox
+[your_program] (< (< 13.0 49.0) 85.0)
+[tester::#UH4] [test-3] ✓ 1 line(s) match on stdout
+[tester::#UH4] [test-3] ✓ Received exit code 0.
+[tester::#UH4] [test-4] Running test case: 4
+[tester::#UH4] [test-4] Writing contents to ./test.lox:
+[tester::#UH4] [test-4.lox] (68 - 88) >= -(29 / 87 + 47)
+[tester::#UH4] [test-4] $ ./your_program.sh parse test.lox
+[your_program] (>= (group (- 68.0 88.0)) (- (group (+ (/ 29.0 87.0) 47.0))))
+[tester::#UH4] [test-4] ✓ 1 line(s) match on stdout
+[tester::#UH4] [test-4] ✓ Received exit code 0.
+[tester::#UH4] Test passed.
+[tester::#YF2] Running tests for Stage #YF2 (Parsing Expressions - Arithmetic operators (2/2))
+[tester::#YF2] [test-1] Running test case: 1
+[tester::#YF2] [test-1] Writing contents to ./test.lox:
+[tester::#YF2] [test-1.lox] "hello" + "world"
+[tester::#YF2] [test-1] $ ./your_program.sh parse test.lox
+[your_program] (+ hello world)
+[tester::#YF2] [test-1] ✓ 1 line(s) match on stdout
+[tester::#YF2] [test-1] ✓ Received exit code 0.
+[tester::#YF2] [test-2] Running test case: 2
+[tester::#YF2] [test-2] Writing contents to ./test.lox:
+[tester::#YF2] [test-2.lox] 56 - 76 * 35 - 19
+[tester::#YF2] [test-2] $ ./your_program.sh parse test.lox
+[your_program] (- (- 56.0 (* 76.0 35.0)) 19.0)
+[tester::#YF2] [test-2] ✓ 1 line(s) match on stdout
+[tester::#YF2] [test-2] ✓ Received exit code 0.
+[tester::#YF2] [test-3] Running test case: 3
+[tester::#YF2] [test-3] Writing contents to ./test.lox:
+[tester::#YF2] [test-3.lox] 14 + 36 - 43 / 28
+[tester::#YF2] [test-3] $ ./your_program.sh parse test.lox
+[your_program] (- (+ 14.0 36.0) (/ 43.0 28.0))
+[tester::#YF2] [test-3] ✓ 1 line(s) match on stdout
+[tester::#YF2] [test-3] ✓ Received exit code 0.
+[tester::#YF2] [test-4] Running test case: 4
+[tester::#YF2] [test-4] Writing contents to ./test.lox:
+[tester::#YF2] [test-4.lox] (-39 + 40) * (72 * 80) / (10 + 66)
+[tester::#YF2] [test-4] $ ./your_program.sh parse test.lox
+[your_program] (/ (* (group (+ (- 39.0) 40.0)) (group (* 72.0 80.0))) (group (+ 10.0 66.0)))
+[tester::#YF2] [test-4] ✓ 1 line(s) match on stdout
+[tester::#YF2] [test-4] ✓ Received exit code 0.
+[tester::#YF2] Test passed.
+[tester::#WA9] Running tests for Stage #WA9 (Parsing Expressions - Arithmetic operators (1/2))
+[tester::#WA9] [test-1] Running test case: 1
+[tester::#WA9] [test-1] Writing contents to ./test.lox:
+[tester::#WA9] [test-1.lox] 97 * 90 / 51
+[tester::#WA9] [test-1] $ ./your_program.sh parse test.lox
+[your_program] (/ (* 97.0 90.0) 51.0)
+[tester::#WA9] [test-1] ✓ 1 line(s) match on stdout
+[tester::#WA9] [test-1] ✓ Received exit code 0.
+[tester::#WA9] [test-2] Running test case: 2
+[tester::#WA9] [test-2] Writing contents to ./test.lox:
+[tester::#WA9] [test-2.lox] 61 / 25 / 82
+[tester::#WA9] [test-2] $ ./your_program.sh parse test.lox
+[your_program] (/ (/ 61.0 25.0) 82.0)
+[tester::#WA9] [test-2] ✓ 1 line(s) match on stdout
+[tester::#WA9] [test-2] ✓ Received exit code 0.
+[tester::#WA9] [test-3] Running test case: 3
+[tester::#WA9] [test-3] Writing contents to ./test.lox:
+[tester::#WA9] [test-3.lox] 96 * 17 * 68 / 16
+[tester::#WA9] [test-3] $ ./your_program.sh parse test.lox
+[your_program] (/ (* (* 96.0 17.0) 68.0) 16.0)
+[tester::#WA9] [test-3] ✓ 1 line(s) match on stdout
+[tester::#WA9] [test-3] ✓ Received exit code 0.
+[tester::#WA9] [test-4] Running test case: 4
+[tester::#WA9] [test-4] Writing contents to ./test.lox:
+[tester::#WA9] [test-4.lox] (71 * -38 / (42 * 49))
+[tester::#WA9] [test-4] $ ./your_program.sh parse test.lox
+[your_program] (group (/ (* 71.0 (- 38.0)) (group (* 42.0 49.0))))
+[tester::#WA9] [test-4] ✓ 1 line(s) match on stdout
+[tester::#WA9] [test-4] ✓ Received exit code 0.
+[tester::#WA9] Test passed.
+[tester::#MQ1] Running tests for Stage #MQ1 (Parsing Expressions - Unary Operators)
+[tester::#MQ1] [test-1] Running test case: 1
+[tester::#MQ1] [test-1] Writing contents to ./test.lox:
+[tester::#MQ1] [test-1.lox] !false
+[tester::#MQ1] [test-1] $ ./your_program.sh parse test.lox
+[your_program] (! false)
+[tester::#MQ1] [test-1] ✓ 1 line(s) match on stdout
+[tester::#MQ1] [test-1] ✓ Received exit code 0.
+[tester::#MQ1] [test-2] Running test case: 2
+[tester::#MQ1] [test-2] Writing contents to ./test.lox:
+[tester::#MQ1] [test-2.lox] -90
+[tester::#MQ1] [test-2] $ ./your_program.sh parse test.lox
+[your_program] (- 90.0)
+[tester::#MQ1] [test-2] ✓ 1 line(s) match on stdout
+[tester::#MQ1] [test-2] ✓ Received exit code 0.
+[tester::#MQ1] [test-3] Running test case: 3
+[tester::#MQ1] [test-3] Writing contents to ./test.lox:
+[tester::#MQ1] [test-3.lox] !!false
+[tester::#MQ1] [test-3] $ ./your_program.sh parse test.lox
+[your_program] (! (! false))
+[tester::#MQ1] [test-3] ✓ 1 line(s) match on stdout
+[tester::#MQ1] [test-3] ✓ Received exit code 0.
+[tester::#MQ1] [test-4] Running test case: 4
+[tester::#MQ1] [test-4] Writing contents to ./test.lox:
+[tester::#MQ1] [test-4.lox] (!!(true))
+[tester::#MQ1] [test-4] $ ./your_program.sh parse test.lox
+[your_program] (group (! (! (group true))))
+[tester::#MQ1] [test-4] ✓ 1 line(s) match on stdout
+[tester::#MQ1] [test-4] ✓ Received exit code 0.
+[tester::#MQ1] Test passed.
+[tester::#XE6] Running tests for Stage #XE6 (Parsing Expressions - Parentheses)
+[tester::#XE6] [test-1] Running test case: 1
+[tester::#XE6] [test-1] Writing contents to ./test.lox:
+[tester::#XE6] [test-1.lox] ("foo")
+[tester::#XE6] [test-1] $ ./your_program.sh parse test.lox
+[your_program] (group foo)
+[tester::#XE6] [test-1] ✓ 1 line(s) match on stdout
+[tester::#XE6] [test-1] ✓ Received exit code 0.
+[tester::#XE6] [test-2] Running test case: 2
+[tester::#XE6] [test-2] Writing contents to ./test.lox:
+[tester::#XE6] [test-2.lox] ((true))
+[tester::#XE6] [test-2] $ ./your_program.sh parse test.lox
+[your_program] (group (group true))
+[tester::#XE6] [test-2] ✓ 1 line(s) match on stdout
+[tester::#XE6] [test-2] ✓ Received exit code 0.
+[tester::#XE6] [test-3] Running test case: 3
+[tester::#XE6] [test-3] Writing contents to ./test.lox:
+[tester::#XE6] [test-3.lox] (nil)
+[tester::#XE6] [test-3] $ ./your_program.sh parse test.lox
+[your_program] (group nil)
+[tester::#XE6] [test-3] ✓ 1 line(s) match on stdout
+[tester::#XE6] [test-3] ✓ Received exit code 0.
+[tester::#XE6] [test-4] Running test case: 4
+[tester::#XE6] [test-4] Writing contents to ./test.lox:
+[tester::#XE6] [test-4.lox] (44.46)
+[tester::#XE6] [test-4] $ ./your_program.sh parse test.lox
+[your_program] (group 44.46)
+[tester::#XE6] [test-4] ✓ 1 line(s) match on stdout
+[tester::#XE6] [test-4] ✓ Received exit code 0.
+[tester::#XE6] Test passed.
+[tester::#TH5] Running tests for Stage #TH5 (Parsing Expressions - String literals)
+[tester::#TH5] [test-1] Running test case: 1
+[tester::#TH5] [test-1] Writing contents to ./test.lox:
+[tester::#TH5] [test-1.lox] "quz baz"
+[tester::#TH5] [test-1] $ ./your_program.sh parse test.lox
+[your_program] quz baz
+[tester::#TH5] [test-1] ✓ 1 line(s) match on stdout
+[tester::#TH5] [test-1] ✓ Received exit code 0.
+[tester::#TH5] [test-2] Running test case: 2
+[tester::#TH5] [test-2] Writing contents to ./test.lox:
+[tester::#TH5] [test-2.lox] "'quz'"
+[tester::#TH5] [test-2] $ ./your_program.sh parse test.lox
+[your_program] 'quz'
+[tester::#TH5] [test-2] ✓ 1 line(s) match on stdout
+[tester::#TH5] [test-2] ✓ Received exit code 0.
+[tester::#TH5] [test-3] Running test case: 3
+[tester::#TH5] [test-3] Writing contents to ./test.lox:
+[tester::#TH5] [test-3.lox] "// world"
+[tester::#TH5] [test-3] $ ./your_program.sh parse test.lox
+[your_program] // world
+[tester::#TH5] [test-3] ✓ 1 line(s) match on stdout
+[tester::#TH5] [test-3] ✓ Received exit code 0.
+[tester::#TH5] [test-4] Running test case: 4
+[tester::#TH5] [test-4] Writing contents to ./test.lox:
+[tester::#TH5] [test-4.lox] "11"
+[tester::#TH5] [test-4] $ ./your_program.sh parse test.lox
+[your_program] 11
+[tester::#TH5] [test-4] ✓ 1 line(s) match on stdout
+[tester::#TH5] [test-4] ✓ Received exit code 0.
+[tester::#TH5] Test passed.
+[tester::#RA8] Running tests for Stage #RA8 (Parsing Expressions - Number literals)
+[tester::#RA8] [test-1] Running test case: 1
+[tester::#RA8] [test-1] Writing contents to ./test.lox:
+[tester::#RA8] [test-1.lox] 49
+[tester::#RA8] [test-1] $ ./your_program.sh parse test.lox
+[your_program] 49.0
+[tester::#RA8] [test-1] ✓ 1 line(s) match on stdout
+[tester::#RA8] [test-1] ✓ Received exit code 0.
+[tester::#RA8] [test-2] Running test case: 2
+[tester::#RA8] [test-2] Writing contents to ./test.lox:
+[tester::#RA8] [test-2.lox] 0.0
+[tester::#RA8] [test-2] $ ./your_program.sh parse test.lox
+[your_program] 0.0
+[tester::#RA8] [test-2] ✓ 1 line(s) match on stdout
+[tester::#RA8] [test-2] ✓ Received exit code 0.
+[tester::#RA8] [test-3] Running test case: 3
+[tester::#RA8] [test-3] Writing contents to ./test.lox:
+[tester::#RA8] [test-3.lox] 25.81
+[tester::#RA8] [test-3] $ ./your_program.sh parse test.lox
+[your_program] 25.81
+[tester::#RA8] [test-3] ✓ 1 line(s) match on stdout
+[tester::#RA8] [test-3] ✓ Received exit code 0.
+[tester::#RA8] Test passed.
+[tester::#SC2] Running tests for Stage #SC2 (Parsing Expressions - Booleans & Nil)
+[tester::#SC2] [test-1] Running test case: 1
+[tester::#SC2] [test-1] Writing contents to ./test.lox:
+[tester::#SC2] [test-1.lox] true
+[tester::#SC2] [test-1] $ ./your_program.sh parse test.lox
+[your_program] true
+[tester::#SC2] [test-1] ✓ 1 line(s) match on stdout
+[tester::#SC2] [test-1] ✓ Received exit code 0.
+[tester::#SC2] [test-2] Running test case: 2
+[tester::#SC2] [test-2] Writing contents to ./test.lox:
+[tester::#SC2] [test-2.lox] false
+[tester::#SC2] [test-2] $ ./your_program.sh parse test.lox
+[your_program] false
+[tester::#SC2] [test-2] ✓ 1 line(s) match on stdout
+[tester::#SC2] [test-2] ✓ Received exit code 0.
+[tester::#SC2] [test-3] Running test case: 3
+[tester::#SC2] [test-3] Writing contents to ./test.lox:
+[tester::#SC2] [test-3.lox] nil
+[tester::#SC2] [test-3] $ ./your_program.sh parse test.lox
+[your_program] nil
+[tester::#SC2] [test-3] ✓ 1 line(s) match on stdout
+[tester::#SC2] [test-3] ✓ Received exit code 0.
+[tester::#SC2] Test passed.
+[tester::#PQ5] Running tests for Stage #PQ5 (Scanning: Reserved words)
+[tester::#PQ5] [test-1] Running test case: 1
+[tester::#PQ5] [test-1] Writing contents to ./test.lox:
+[tester::#PQ5] [test-1.lox] return
+[tester::#PQ5] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] RETURN return null
+[your_program] EOF  null
+[tester::#PQ5] [test-1] ✓ 2 line(s) match on stdout
+[tester::#PQ5] [test-1] ✓ Received exit code 0.
+[tester::#PQ5] [test-2] Running test case: 2
+[tester::#PQ5] [test-2] Writing contents to ./test.lox:
+[tester::#PQ5] [test-2.lox] THIS nil PRINT for FUN SUPER AND if NIL return class else or super true FOR VAR print ELSE WHILE this RETURN TRUE FALSE and OR IF fun while CLASS false var
+[tester::#PQ5] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] IDENTIFIER THIS null
+[your_program] NIL nil null
+[your_program] IDENTIFIER PRINT null
+[your_program] FOR for null
+[your_program] IDENTIFIER FUN null
+[your_program] IDENTIFIER SUPER null
+[your_program] IDENTIFIER AND null
+[your_program] IF if null
+[your_program] IDENTIFIER NIL null
+[your_program] RETURN return null
+[your_program] CLASS class null
+[your_program] ELSE else null
+[your_program] OR or null
+[your_program] SUPER super null
+[your_program] TRUE true null
+[your_program] IDENTIFIER FOR null
+[your_program] IDENTIFIER VAR null
+[your_program] PRINT print null
+[your_program] IDENTIFIER ELSE null
+[your_program] IDENTIFIER WHILE null
+[your_program] THIS this null
+[your_program] IDENTIFIER RETURN null
+[your_program] IDENTIFIER TRUE null
+[your_program] IDENTIFIER FALSE null
+[your_program] AND and null
+[your_program] IDENTIFIER OR null
+[your_program] IDENTIFIER IF null
+[your_program] FUN fun null
+[your_program] WHILE while null
+[your_program] IDENTIFIER CLASS null
+[your_program] FALSE false null
+[your_program] VAR var null
+[your_program] EOF  null
+[your_program]
+[tester::#PQ5] [test-2] ✓ 33 line(s) match on stdout
+[tester::#PQ5] [test-2] ✓ Received exit code 0.
+[tester::#PQ5] [test-3] Running test case: 3
+[tester::#PQ5] [test-3] Writing contents to ./test.lox:
+[tester::#PQ5] [test-3.lox] var greeting = "Hello"
+[tester::#PQ5] [test-3.lox] if (greeting == "Hello") {
+[tester::#PQ5] [test-3.lox]     return true
+[tester::#PQ5] [test-3.lox] } else {
+[tester::#PQ5] [test-3.lox]     return false
+[tester::#PQ5] [test-3.lox] }
+[tester::#PQ5] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] VAR var null
+[your_program] IDENTIFIER greeting null
+[your_program] EQUAL = null
+[your_program] STRING "Hello" Hello
+[your_program] IF if null
+[your_program] LEFT_PAREN ( null
+[your_program] IDENTIFIER greeting null
+[your_program] EQUAL_EQUAL == null
+[your_program] STRING "Hello" Hello
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_BRACE { null
+[your_program] RETURN return null
+[your_program] TRUE true null
+[your_program] RIGHT_BRACE } null
+[your_program] ELSE else null
+[your_program] LEFT_BRACE { null
+[your_program] RETURN return null
+[your_program] FALSE false null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[tester::#PQ5] [test-3] ✓ 20 line(s) match on stdout
+[tester::#PQ5] [test-3] ✓ Received exit code 0.
+[tester::#PQ5] [test-4] Running test case: 4
+[tester::#PQ5] [test-4] Writing contents to ./test.lox:
+[tester::#PQ5] [test-4.lox] var result = (a + b) > 7 or "Success" != "Failure" or x >= 5
+[tester::#PQ5] [test-4.lox] while (result) {
+[tester::#PQ5] [test-4.lox]     var counter = 0
+[tester::#PQ5] [test-4.lox]     counter = counter + 1
+[tester::#PQ5] [test-4.lox]     if (counter == 10) {
+[tester::#PQ5] [test-4.lox]         return nil
+[tester::#PQ5] [test-4.lox]     }
+[tester::#PQ5] [test-4.lox] }
+[tester::#PQ5] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] VAR var null
+[your_program] IDENTIFIER result null
+[your_program] EQUAL = null
+[your_program] LEFT_PAREN ( null
+[your_program] IDENTIFIER a null
+[your_program] PLUS + null
+[your_program] IDENTIFIER b null
+[your_program] RIGHT_PAREN ) null
+[your_program] GREATER > null
+[your_program] NUMBER 7 7.0
+[your_program] OR or null
+[your_program] STRING "Success" Success
+[your_program] BANG_EQUAL != null
+[your_program] STRING "Failure" Failure
+[your_program] OR or null
+[your_program] IDENTIFIER x null
+[your_program] GREATER_EQUAL >= null
+[your_program] NUMBER 5 5.0
+[your_program] WHILE while null
+[your_program] LEFT_PAREN ( null
+[your_program] IDENTIFIER result null
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_BRACE { null
+[your_program] VAR var null
+[your_program] IDENTIFIER counter null
+[your_program] EQUAL = null
+[your_program] NUMBER 0 0.0
+[your_program] IDENTIFIER counter null
+[your_program] EQUAL = null
+[your_program] IDENTIFIER counter null
+[your_program] PLUS + null
+[your_program] NUMBER 1 1.0
+[your_program] IF if null
+[your_program] LEFT_PAREN ( null
+[your_program] IDENTIFIER counter null
+[your_program] EQUAL_EQUAL == null
+[your_program] NUMBER 10 10.0
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_BRACE { null
+[your_program] RETURN return null
+[your_program] NIL nil null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[your_program]
+[tester::#PQ5] [test-4] ✓ 44 line(s) match on stdout
+[tester::#PQ5] [test-4] ✓ Received exit code 0.
+[tester::#PQ5] Test passed.
+[tester::#EY7] Running tests for Stage #EY7 (Scanning: Identifiers)
+[tester::#EY7] [test-1] Running test case: 1
+[tester::#EY7] [test-1] Writing contents to ./test.lox:
+[tester::#EY7] [test-1.lox] bar baz
+[tester::#EY7] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] IDENTIFIER bar null
+[your_program] IDENTIFIER baz null
+[your_program] EOF  null
+[your_program]
+[tester::#EY7] [test-1] ✓ 3 line(s) match on stdout
+[tester::#EY7] [test-1] ✓ Received exit code 0.
+[tester::#EY7] [test-2] Running test case: 2
+[tester::#EY7] [test-2] Writing contents to ./test.lox:
+[tester::#EY7] [test-2.lox] _123world_ baz 6ar foo f00
+[tester::#EY7] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] IDENTIFIER _123world_ null
+[your_program] IDENTIFIER baz null
+[your_program] NUMBER 6 6.0
+[your_program] IDENTIFIER ar null
+[your_program] IDENTIFIER foo null
+[your_program] IDENTIFIER f00 null
+[your_program] EOF  null
+[your_program]
+[tester::#EY7] [test-2] ✓ 7 line(s) match on stdout
+[tester::#EY7] [test-2] ✓ Received exit code 0.
+[tester::#EY7] [test-3] Running test case: 3
+[tester::#EY7] [test-3] Writing contents to ./test.lox:
+[tester::#EY7] [test-3.lox] message = "Hello, World!"
+[tester::#EY7] [test-3.lox] number = 123
+[tester::#EY7] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] IDENTIFIER message null
+[your_program] EQUAL = null
+[your_program] STRING "Hello, World!" Hello, World!
+[your_program] IDENTIFIER number null
+[your_program] EQUAL = null
+[your_program] NUMBER 123 123.0
+[your_program] EOF  null
+[tester::#EY7] [test-3] ✓ 7 line(s) match on stdout
+[tester::#EY7] [test-3] ✓ Received exit code 0.
+[tester::#EY7] [test-4] Running test case: 4
+[tester::#EY7] [test-4] Writing contents to ./test.lox:
+[tester::#EY7] [test-4.lox] {
+[tester::#EY7] [test-4.lox] // This is a complex test case
+[tester::#EY7] [test-4.lox] str1 = "Test"
+[tester::#EY7] [test-4.lox] str2 = "Case"
+[tester::#EY7] [test-4.lox] num1 = 100
+[tester::#EY7] [test-4.lox] num2 = 200.00
+[tester::#EY7] [test-4.lox] result = (str1 == str2) != ((num1 + num2) >= 300)
+[tester::#EY7] [test-4.lox] }
+[tester::#EY7] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_BRACE { null
+[your_program] IDENTIFIER str1 null
+[your_program] EQUAL = null
+[your_program] STRING "Test" Test
+[your_program] IDENTIFIER str2 null
+[your_program] EQUAL = null
+[your_program] STRING "Case" Case
+[your_program] IDENTIFIER num1 null
+[your_program] EQUAL = null
+[your_program] NUMBER 100 100.0
+[your_program] IDENTIFIER num2 null
+[your_program] EQUAL = null
+[your_program] NUMBER 200.00 200.0
+[your_program] IDENTIFIER result null
+[your_program] EQUAL = null
+[your_program] LEFT_PAREN ( null
+[your_program] IDENTIFIER str1 null
+[your_program] EQUAL_EQUAL == null
+[your_program] IDENTIFIER str2 null
+[your_program] RIGHT_PAREN ) null
+[your_program] BANG_EQUAL != null
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_PAREN ( null
+[your_program] IDENTIFIER num1 null
+[your_program] PLUS + null
+[your_program] IDENTIFIER num2 null
+[your_program] RIGHT_PAREN ) null
+[your_program]
+[your_program] GREATER_EQUAL >= null
+[your_program] NUMBER 300 300.0
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[tester::#EY7] [test-4] ✓ 32 line(s) match on stdout
+[tester::#EY7] [test-4] ✓ Received exit code 0.
+[tester::#EY7] Test passed.
+[tester::#KJ0] Running tests for Stage #KJ0 (Scanning: Number literals)
+[tester::#KJ0] [test-1] Running test case: 1
+[tester::#KJ0] [test-1] Writing contents to ./test.lox:
+[tester::#KJ0] [test-1.lox] 52
+[tester::#KJ0] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] NUMBER 52 52.0
+[your_program] EOF  null
+[your_program]
+[tester::#KJ0] [test-1] ✓ 2 line(s) match on stdout
+[tester::#KJ0] [test-1] ✓ Received exit code 0.
+[tester::#KJ0] [test-2] Running test case: 2
+[tester::#KJ0] [test-2] Writing contents to ./test.lox:
+[tester::#KJ0] [test-2.lox] 4668.3511
+[tester::#KJ0] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] NUMBER 4668.3511 4668.3511
+[your_program] EOF  null
+[tester::#KJ0] [test-2] ✓ 2 line(s) match on stdout
+[tester::#KJ0] [test-2] ✓ Received exit code 0.
+[tester::#KJ0] [test-3] Running test case: 3
+[tester::#KJ0] [test-3] Writing contents to ./test.lox:
+[tester::#KJ0] [test-3.lox] 16.0000
+[tester::#KJ0] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] NUMBER 16.0000 16.0
+[your_program] EOF  null
+[tester::#KJ0] [test-3] ✓ 2 line(s) match on stdout
+[tester::#KJ0] [test-3] ✓ Received exit code 0.
+[tester::#KJ0] [test-4] Running test case: 4
+[tester::#KJ0] [test-4] Writing contents to ./test.lox:
+[tester::#KJ0] [test-4.lox] (35+89) > 13 != ("Success" != "Failure") != (45 >= 68)
+[tester::#KJ0] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] LEFT_PAREN ( null
+[your_program] NUMBER 35 35.0
+[your_program] PLUS + null
+[your_program] NUMBER 89 89.0
+[your_program] RIGHT_PAREN ) null
+[your_program] GREATER > null
+[your_program] NUMBER 13 13.0
+[your_program] BANG_EQUAL != null
+[your_program] LEFT_PAREN ( null
+[your_program] STRING "Success" Success
+[your_program] BANG_EQUAL != null
+[your_program] STRING "Failure" Failure
+[your_program] RIGHT_PAREN ) null
+[your_program] BANG_EQUAL != null
+[your_program] LEFT_PAREN ( null
+[your_program] NUMBER 45 45.0
+[your_program] GREATER_EQUAL >= null
+[your_program] NUMBER 68 68.0
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[tester::#KJ0] [test-4] ✓ 20 line(s) match on stdout
+[tester::#KJ0] [test-4] ✓ Received exit code 0.
+[tester::#KJ0] Test passed.
+[tester::#UE7] Running tests for Stage #UE7 (Scanning: String literals)
+[tester::#UE7] [test-1] Running test case: 1
+[tester::#UE7] [test-1] Writing contents to ./test.lox:
+[tester::#UE7] [test-1.lox] "hello"
+[tester::#UE7] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] STRING "hello" hello
+[your_program] EOF  null
+[your_program]
+[tester::#UE7] [test-1] ✓ 2 line(s) match on stdout
+[tester::#UE7] [test-1] ✓ Received exit code 0.
+[tester::#UE7] [test-2] Running test case: 2
+[tester::#UE7] [test-2] Writing contents to ./test.lox:
+[tester::#UE7] [test-2.lox] "foo" * "unterminated
+[tester::#UE7] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] STRING "foo" foo
+[your_program] STAR * null
+[your_program] EOF  null
+[your_program] [line 1] Error: Unterminated string.
+[tester::#UE7] [test-2] ✓ 1 line(s) match on stderr
+[tester::#UE7] [test-2] ✓ 3 line(s) match on stdout
+[tester::#UE7] [test-2] ✓ Received exit code 65.
+[tester::#UE7] [test-3] Running test case: 3
+[tester::#UE7] [test-3] Writing contents to ./test.lox:
+[tester::#UE7] [test-3.lox] "foo <|TAB|>bar 123 // hello world!"
+[tester::#UE7] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] STRING "foo      bar 123 // hello world!" foo    bar 123 // hello world!
+[your_program] EOF  null
+[your_program]
+[tester::#UE7] [test-3] ✓ 2 line(s) match on stdout
+[tester::#UE7] [test-3] ✓ Received exit code 0.
+[tester::#UE7] [test-4] Running test case: 4
+[tester::#UE7] [test-4] Writing contents to ./test.lox:
+[tester::#UE7] [test-4.lox] ("bar"+"foo") != "other_string"
+[tester::#UE7] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] LEFT_PAREN ( null
+[your_program] STRING "bar" bar
+[your_program] PLUS + null
+[your_program] STRING "foo" foo
+[your_program] RIGHT_PAREN ) null
+[your_program] BANG_EQUAL != null
+[your_program] STRING "other_string" other_string
+[your_program] EOF  null
+[tester::#UE7] [test-4] ✓ 8 line(s) match on stdout
+[tester::#UE7] [test-4] ✓ Received exit code 0.
+[tester::#UE7] Test passed.
+[tester::#TZ7] Running tests for Stage #TZ7 (Scanning: Multi-line errors)
+[tester::#TZ7] [test-1] Running test case: 1
+[tester::#TZ7] [test-1] Writing contents to ./test.lox:
+[tester::#TZ7] [test-1.lox] ()
+[tester::#TZ7] [test-1.lox] <|TAB|>@
+[tester::#TZ7] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[your_program] [line 2] Error: Unexpected character: @
+[tester::#TZ7] [test-1] ✓ 1 line(s) match on stderr
+[tester::#TZ7] [test-1] ✓ 3 line(s) match on stdout
+[tester::#TZ7] [test-1] ✓ Received exit code 65.
+[tester::#TZ7] [test-2] Running test case: 2
+[tester::#TZ7] [test-2] Writing contents to ./test.lox:
+[tester::#TZ7] [test-2.lox] $ @
+[tester::#TZ7] [test-2.lox]
+[tester::#TZ7] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: $
+[your_program] [line 1] Error: Unexpected character: @
+[tester::#TZ7] [test-2] ✓ 2 line(s) match on stderr
+[tester::#TZ7] [test-2] ✓ 1 line(s) match on stdout
+[tester::#TZ7] [test-2] ✓ Received exit code 65.
+[tester::#TZ7] [test-3] Running test case: 3
+[tester::#TZ7] [test-3] Writing contents to ./test.lox:
+[tester::#TZ7] [test-3.lox] ()  #<|TAB|>{}
+[tester::#TZ7] [test-3.lox] @
+[tester::#TZ7] [test-3.lox] $
+[tester::#TZ7] [test-3.lox] +++
+[tester::#TZ7] [test-3.lox] // Let's Go!
+[tester::#TZ7] [test-3.lox] +++
+[tester::#TZ7] [test-3.lox] #
+[tester::#TZ7] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_BRACE { null
+[your_program] RIGHT_BRACE } null
+[your_program] PLUS + null
+[your_program] PLUS + null
+[your_program] PLUS + null
+[your_program] PLUS + null
+[your_program] PLUS + null
+[your_program] PLUS + null
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: #
+[your_program] [line 2] Error: Unexpected character: @
+[your_program] [line 3] Error: Unexpected character: $
+[your_program] [line 7] Error: Unexpected character: #
+[tester::#TZ7] [test-3] ✓ 4 line(s) match on stderr
+[tester::#TZ7] [test-3] ✓ 11 line(s) match on stdout
+[tester::#TZ7] [test-3] ✓ Received exit code 65.
+[tester::#TZ7] [test-4] Running test case: 4
+[tester::#TZ7] [test-4] Writing contents to ./test.lox:
+[tester::#TZ7] [test-4.lox] ({+<|TAB|>@})
+[tester::#TZ7] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_BRACE { null
+[your_program] PLUS + null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: @
+[tester::#TZ7] [test-4] ✓ 1 line(s) match on stderr
+[tester::#TZ7] [test-4] ✓ 6 line(s) match on stdout
+[tester::#TZ7] [test-4] ✓ Received exit code 65.
+[tester::#TZ7] Test passed.
+[tester::#ER2] Running tests for Stage #ER2 (Scanning: Whitespace)
+[tester::#ER2] [test-1] Running test case: 1
+[tester::#ER2] [test-1] Writing contents to ./test.lox:
+[tester::#ER2] [test-1.lox] <|SPACE|>
+[tester::#ER2] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] EOF  null
+[your_program]
+[tester::#ER2] [test-1] ✓ 1 line(s) match on stdout
+[tester::#ER2] [test-1] ✓ Received exit code 0.
+[tester::#ER2] [test-2] Running test case: 2
+[tester::#ER2] [test-2] Writing contents to ./test.lox:
+[tester::#ER2] [test-2.lox] <|SPACE|><|TAB|>
+[tester::#ER2] [test-2.lox] <|SPACE|>
+[tester::#ER2] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] EOF  null
+[your_program]
+[tester::#ER2] [test-2] ✓ 1 line(s) match on stdout
+[tester::#ER2] [test-2] ✓ Received exit code 0.
+[tester::#ER2] [test-3] Running test case: 3
+[tester::#ER2] [test-3] Writing contents to ./test.lox:
+[tester::#ER2] [test-3.lox] {<|SPACE|><|TAB|>}
+[tester::#ER2] [test-3.lox] ((,.;-<|SPACE|>))
+[tester::#ER2] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_BRACE { null
+[your_program] RIGHT_BRACE } null
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_PAREN ( null
+[your_program] COMMA , null
+[your_program] DOT . null
+[your_program] SEMICOLON ; null
+[your_program] MINUS - null
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[your_program]
+[tester::#ER2] [test-3] ✓ 11 line(s) match on stdout
+[tester::#ER2] [test-3] ✓ Received exit code 0.
+[tester::#ER2] [test-4] Running test case: 4
+[tester::#ER2] [test-4] Writing contents to ./test.lox:
+[tester::#ER2] [test-4.lox] {
+[tester::#ER2] [test-4.lox] <|SPACE|>
+[tester::#ER2] [test-4.lox] <|TAB|><|SPACE|>}
+[tester::#ER2] [test-4.lox] ((-*<|SPACE|><.))
+[tester::#ER2] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_BRACE { null
+[your_program] RIGHT_BRACE } null
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_PAREN ( null
+[your_program] MINUS - null
+[your_program] STAR * null
+[your_program] LESS < null
+[your_program] DOT . null
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[your_program]
+[tester::#ER2] [test-4] ✓ 11 line(s) match on stdout
+[tester::#ER2] [test-4] ✓ Received exit code 0.
+[tester::#ER2] Test passed.
+[tester::#ML2] Running tests for Stage #ML2 (Scanning: Division operator & comments)
+[tester::#ML2] [test-1] Running test case: 1
+[tester::#ML2] [test-1] Writing contents to ./test.lox:
+[tester::#ML2] [test-1.lox] //Comment
+[tester::#ML2] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] EOF  null
+[your_program]
+[tester::#ML2] [test-1] ✓ 1 line(s) match on stdout
+[tester::#ML2] [test-1] ✓ Received exit code 0.
+[tester::#ML2] [test-2] Running test case: 2
+[tester::#ML2] [test-2] Writing contents to ./test.lox:
+[tester::#ML2] [test-2.lox] (///Unicode:£§᯽☺♣)
+[tester::#ML2] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] EOF  null
+[your_program]
+[tester::#ML2] [test-2] ✓ 2 line(s) match on stdout
+[tester::#ML2] [test-2] ✓ Received exit code 0.
+[tester::#ML2] [test-3] Running test case: 3
+[tester::#ML2] [test-3] Writing contents to ./test.lox:
+[tester::#ML2] [test-3.lox] /
+[tester::#ML2] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] SLASH / null
+[your_program] EOF  null
+[your_program]
+[tester::#ML2] [test-3] ✓ 2 line(s) match on stdout
+[tester::#ML2] [test-3] ✓ Received exit code 0.
+[tester::#ML2] [test-4] Running test case: 4
+[tester::#ML2] [test-4] Writing contents to ./test.lox:
+[tester::#ML2] [test-4.lox] ({(!>=-)})//Comment
+[tester::#ML2] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_BRACE { null
+[your_program] LEFT_PAREN ( null
+[your_program] BANG ! null
+[your_program] GREATER_EQUAL >= null
+[your_program] MINUS - null
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[tester::#ML2] [test-4] ✓ 10 line(s) match on stdout
+[tester::#ML2] [test-4] ✓ Received exit code 0.
+[tester::#ML2] Test passed.
+[tester::#ET2] Running tests for Stage #ET2 (Scanning: Relational operators)
+[tester::#ET2] [test-1] Running test case: 1
+[tester::#ET2] [test-1] Writing contents to ./test.lox:
+[tester::#ET2] [test-1.lox] >=
+[tester::#ET2] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] GREATER_EQUAL >= null
+[your_program] EOF  null
+[tester::#ET2] [test-1] ✓ 2 line(s) match on stdout
+[tester::#ET2] [test-1] ✓ Received exit code 0.
+[tester::#ET2] [test-2] Running test case: 2
+[tester::#ET2] [test-2] Writing contents to ./test.lox:
+[tester::#ET2] [test-2.lox] <<<=>>>=
+[tester::#ET2] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] LESS < null
+[your_program] LESS < null
+[your_program] LESS_EQUAL <= null
+[your_program] GREATER > null
+[your_program] GREATER > null
+[your_program] GREATER_EQUAL >= null
+[your_program] EOF  null
+[your_program]
+[tester::#ET2] [test-2] ✓ 7 line(s) match on stdout
+[tester::#ET2] [test-2] ✓ Received exit code 0.
+[tester::#ET2] [test-3] Running test case: 3
+[tester::#ET2] [test-3] Writing contents to ./test.lox:
+[tester::#ET2] [test-3.lox] <=<>>=<
+[tester::#ET2] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] LESS_EQUAL <= null
+[your_program] LESS < null
+[your_program] GREATER > null
+[your_program] GREATER_EQUAL >= null
+[your_program] LESS < null
+[your_program] EOF  null
+[your_program]
+[tester::#ET2] [test-3] ✓ 6 line(s) match on stdout
+[tester::#ET2] [test-3] ✓ Received exit code 0.
+[tester::#ET2] [test-4] Running test case: 4
+[tester::#ET2] [test-4] Writing contents to ./test.lox:
+[tester::#ET2] [test-4.lox] (){<===!}
+[tester::#ET2] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_BRACE { null
+[your_program] LESS_EQUAL <= null
+[your_program] EQUAL_EQUAL == null
+[your_program] BANG ! null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[your_program]
+[tester::#ET2] [test-4] ✓ 8 line(s) match on stdout
+[tester::#ET2] [test-4] ✓ Received exit code 0.
+[tester::#ET2] Test passed.
+[tester::#BU3] Running tests for Stage #BU3 (Scanning: Negation & inequality operators)
+[tester::#BU3] [test-1] Running test case: 1
+[tester::#BU3] [test-1] Writing contents to ./test.lox:
+[tester::#BU3] [test-1.lox] !=
+[tester::#BU3] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] BANG_EQUAL != null
+[your_program] EOF  null
+[your_program]
+[tester::#BU3] [test-1] ✓ 2 line(s) match on stdout
+[tester::#BU3] [test-1] ✓ Received exit code 0.
+[tester::#BU3] [test-2] Running test case: 2
+[tester::#BU3] [test-2] Writing contents to ./test.lox:
+[tester::#BU3] [test-2.lox] !!===
+[tester::#BU3] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] BANG ! null
+[your_program] BANG_EQUAL != null
+[your_program] EQUAL_EQUAL == null
+[your_program] EOF  null
+[tester::#BU3] [test-2] ✓ 4 line(s) match on stdout
+[tester::#BU3] [test-2] ✓ Received exit code 0.
+[tester::#BU3] [test-3] Running test case: 3
+[tester::#BU3] [test-3] Writing contents to ./test.lox:
+[tester::#BU3] [test-3.lox] !{!}(!===)=
+[tester::#BU3] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] BANG ! null
+[your_program] LEFT_BRACE { null
+[your_program] BANG ! null
+[your_program] RIGHT_BRACE } null
+[your_program] LEFT_PAREN ( null
+[your_program] BANG_EQUAL != null
+[your_program] EQUAL_EQUAL == null
+[your_program] RIGHT_PAREN ) null
+[your_program] EQUAL = null
+[your_program] EOF  null
+[your_program]
+[tester::#BU3] [test-3] ✓ 10 line(s) match on stdout
+[tester::#BU3] [test-3] ✓ Received exit code 0.
+[tester::#BU3] [test-4] Running test case: 4
+[tester::#BU3] [test-4] Writing contents to ./test.lox:
+[tester::#BU3] [test-4.lox] {(===#$%)}
+[tester::#BU3] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_BRACE { null
+[your_program] LEFT_PAREN ( null
+[your_program] EQUAL_EQUAL == null
+[your_program] EQUAL = null
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: #
+[your_program] [line 1] Error: Unexpected character: $
+[your_program] [line 1] Error: Unexpected character: %
+[tester::#BU3] [test-4] ✓ 3 line(s) match on stderr
+[tester::#BU3] [test-4] ✓ 7 line(s) match on stdout
+[tester::#BU3] [test-4] ✓ Received exit code 65.
+[tester::#BU3] Test passed.
+[tester::#MP7] Running tests for Stage #MP7 (Scanning: Assignment & equality Operators)
+[tester::#MP7] [test-1] Running test case: 1
+[tester::#MP7] [test-1] Writing contents to ./test.lox:
+[tester::#MP7] [test-1.lox] =
+[tester::#MP7] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] EQUAL = null
+[your_program] EOF  null
+[your_program]
+[tester::#MP7] [test-1] ✓ 2 line(s) match on stdout
+[tester::#MP7] [test-1] ✓ Received exit code 0.
+[tester::#MP7] [test-2] Running test case: 2
+[tester::#MP7] [test-2] Writing contents to ./test.lox:
+[tester::#MP7] [test-2.lox] ==
+[tester::#MP7] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] EQUAL_EQUAL == null
+[your_program] EOF  null
+[your_program]
+[tester::#MP7] [test-2] ✓ 2 line(s) match on stdout
+[tester::#MP7] [test-2] ✓ Received exit code 0.
+[tester::#MP7] [test-3] Running test case: 3
+[tester::#MP7] [test-3] Writing contents to ./test.lox:
+[tester::#MP7] [test-3.lox] ({=}){==}
+[tester::#MP7] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_BRACE { null
+[your_program] EQUAL = null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_BRACE { null
+[your_program] EQUAL_EQUAL == null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[your_program]
+[tester::#MP7] [test-3] ✓ 9 line(s) match on stdout
+[tester::#MP7] [test-3] ✓ Received exit code 0.
+[tester::#MP7] [test-4] Running test case: 4
+[tester::#MP7] [test-4] Writing contents to ./test.lox:
+[tester::#MP7] [test-4.lox] ((===%#$))
+[tester::#MP7] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_PAREN ( null
+[your_program] EQUAL_EQUAL == null
+[your_program] EQUAL = null
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: %
+[your_program] [line 1] Error: Unexpected character: #
+[your_program] [line 1] Error: Unexpected character: $
+[tester::#MP7] [test-4] ✓ 3 line(s) match on stderr
+[tester::#MP7] [test-4] ✓ 7 line(s) match on stdout
+[tester::#MP7] [test-4] ✓ Received exit code 65.
+[tester::#MP7] Test passed.
+[tester::#EA6] Running tests for Stage #EA6 (Scanning: Lexical errors)
+[tester::#EA6] [test-1] Running test case: 1
+[tester::#EA6] [test-1] Writing contents to ./test.lox:
+[tester::#EA6] [test-1.lox] @
+[tester::#EA6] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: @
+[tester::#EA6] [test-1] ✓ 1 line(s) match on stderr
+[tester::#EA6] [test-1] ✓ 1 line(s) match on stdout
+[tester::#EA6] [test-1] ✓ Received exit code 65.
+[tester::#EA6] [test-2] Running test case: 2
+[tester::#EA6] [test-2] Writing contents to ./test.lox:
+[tester::#EA6] [test-2.lox] ,.$(#
+[tester::#EA6] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] COMMA , null
+[your_program] DOT . null
+[your_program] LEFT_PAREN ( null
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: $
+[your_program] [line 1] Error: Unexpected character: #
+[tester::#EA6] [test-2] ✓ 2 line(s) match on stderr
+[tester::#EA6] [test-2] ✓ 4 line(s) match on stdout
+[tester::#EA6] [test-2] ✓ Received exit code 65.
+[tester::#EA6] [test-3] Running test case: 3
+[tester::#EA6] [test-3] Writing contents to ./test.lox:
+[tester::#EA6] [test-3.lox] @%%#@
+[tester::#EA6] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: @
+[your_program] [line 1] Error: Unexpected character: %
+[your_program] [line 1] Error: Unexpected character: %
+[your_program] [line 1] Error: Unexpected character: #
+[your_program] [line 1] Error: Unexpected character: @
+[tester::#EA6] [test-3] ✓ 5 line(s) match on stderr
+[tester::#EA6] [test-3] ✓ 1 line(s) match on stdout
+[tester::#EA6] [test-3] ✓ Received exit code 65.
+[tester::#EA6] [test-4] Running test case: 4
+[tester::#EA6] [test-4] Writing contents to ./test.lox:
+[tester::#EA6] [test-4.lox] {(#*;,%$.)}
+[tester::#EA6] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_BRACE { null
+[your_program] LEFT_PAREN ( null
+[your_program] STAR * null
+[your_program] SEMICOLON ; null
+[your_program] COMMA , null
+[your_program] DOT . null
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[your_program] [line 1] Error: Unexpected character: #
+[your_program] [line 1] Error: Unexpected character: %
+[your_program] [line 1] Error: Unexpected character: $
+[tester::#EA6] [test-4] ✓ 3 line(s) match on stderr
+[tester::#EA6] [test-4] ✓ 9 line(s) match on stdout
+[tester::#EA6] [test-4] ✓ Received exit code 65.
+[tester::#EA6] Test passed.
+[tester::#XC5] Running tests for Stage #XC5 (Scanning: Other single-character tokens)
+[tester::#XC5] [test-1] Running test case: 1
+[tester::#XC5] [test-1] Writing contents to ./test.lox:
+[tester::#XC5] [test-1.lox] +-
+[tester::#XC5] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] PLUS + null
+[your_program] MINUS - null
+[your_program] EOF  null
+[tester::#XC5] [test-1] ✓ 3 line(s) match on stdout
+[tester::#XC5] [test-1] ✓ Received exit code 0.
+[tester::#XC5] [test-2] Running test case: 2
+[tester::#XC5] [test-2] Writing contents to ./test.lox:
+[tester::#XC5] [test-2.lox] ++--**..,,;;
+[tester::#XC5] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] PLUS + null
+[your_program] PLUS + null
+[your_program] MINUS - null
+[your_program] MINUS - null
+[your_program] STAR * null
+[your_program] STAR * null
+[your_program] DOT . null
+[your_program] DOT . null
+[your_program] COMMA , null
+[your_program] COMMA , null
+[your_program] SEMICOLON ; null
+[your_program] SEMICOLON ; null
+[your_program] EOF  null
+[your_program]
+[tester::#XC5] [test-2] ✓ 13 line(s) match on stdout
+[tester::#XC5] [test-2] ✓ Received exit code 0.
+[tester::#XC5] [test-3] Running test case: 3
+[tester::#XC5] [test-3] Writing contents to ./test.lox:
+[tester::#XC5] [test-3.lox] +-.**,-
+[tester::#XC5] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program] PLUS + null
+[your_program] MINUS - null
+[your_program] DOT . null
+[your_program] STAR * null
+[your_program] STAR * null
+[your_program] COMMA , null
+[your_program] MINUS - null
+[your_program] EOF  null
+[your_program]
+[tester::#XC5] [test-3] ✓ 8 line(s) match on stdout
+[tester::#XC5] [test-3] ✓ Received exit code 0.
+[tester::#XC5] [test-4] Running test case: 4
+[tester::#XC5] [test-4] Writing contents to ./test.lox:
+[tester::#XC5] [test-4.lox] ({-+*;.})
+[tester::#XC5] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_BRACE { null
+[your_program] MINUS - null
+[your_program] PLUS + null
+[your_program] STAR * null
+[your_program] SEMICOLON ; null
+[your_program] DOT . null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[your_program]
+[tester::#XC5] [test-4] ✓ 10 line(s) match on stdout
+[tester::#XC5] [test-4] ✓ Received exit code 0.
+[tester::#XC5] Test passed.
+[tester::#OE8] Running tests for Stage #OE8 (Scanning: Braces)
+[tester::#OE8] [test-1] Running test case: 1
+[tester::#OE8] [test-1] Writing contents to ./test.lox:
+[tester::#OE8] [test-1.lox] }
+[tester::#OE8] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[your_program]
+[tester::#OE8] [test-1] ✓ 2 line(s) match on stdout
+[tester::#OE8] [test-1] ✓ Received exit code 0.
+[tester::#OE8] [test-2] Running test case: 2
+[tester::#OE8] [test-2] Writing contents to ./test.lox:
+[tester::#OE8] [test-2.lox] {{}}
+[tester::#OE8] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] LEFT_BRACE { null
+[your_program] LEFT_BRACE { null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[tester::#OE8] [test-2] ✓ 5 line(s) match on stdout
+[tester::#OE8] [test-2] ✓ Received exit code 0.
+[tester::#OE8] [test-3] Running test case: 3
+[tester::#OE8] [test-3] Writing contents to ./test.lox:
+[tester::#OE8] [test-3.lox] {}}}}
+[tester::#OE8] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] LEFT_BRACE { null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_BRACE } null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[tester::#OE8] [test-3] ✓ 6 line(s) match on stdout
+[tester::#OE8] [test-3] ✓ Received exit code 0.
+[tester::#OE8] [test-4] Running test case: 4
+[tester::#OE8] [test-4] Writing contents to ./test.lox:
+[tester::#OE8] [test-4.lox] }{((){}
+[tester::#OE8] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program] RIGHT_BRACE } null
+[your_program] LEFT_BRACE { null
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_PAREN ( null
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_BRACE { null
+[your_program] RIGHT_BRACE } null
+[your_program] EOF  null
+[your_program]
+[tester::#OE8] [test-4] ✓ 8 line(s) match on stdout
+[tester::#OE8] [test-4] ✓ Received exit code 0.
+[tester::#OE8] Test passed.
+[tester::#OL4] Running tests for Stage #OL4 (Scanning: Parentheses)
+[tester::#OL4] [test-1] Running test case: 1
+[tester::#OL4] [test-1] Writing contents to ./test.lox:
+[tester::#OL4] [test-1.lox] (
+[tester::#OL4] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program] LEFT_PAREN ( null
+[your_program] EOF  null
+[your_program]
+[tester::#OL4] [test-1] ✓ 2 line(s) match on stdout
+[tester::#OL4] [test-1] ✓ Received exit code 0.
+[tester::#OL4] [test-2] Running test case: 2
+[tester::#OL4] [test-2] Writing contents to ./test.lox:
+[tester::#OL4] [test-2.lox] ))
+[tester::#OL4] [test-2] $ ./your_program.sh tokenize test.lox
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_PAREN ) null
+[your_program] EOF  null
+[your_program]
+[tester::#OL4] [test-2] ✓ 3 line(s) match on stdout
+[tester::#OL4] [test-2] ✓ Received exit code 0.
+[tester::#OL4] [test-3] Running test case: 3
+[tester::#OL4] [test-3] Writing contents to ./test.lox:
+[tester::#OL4] [test-3.lox] )(()(
+[tester::#OL4] [test-3] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_PAREN ( null
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_PAREN ( null
+[your_program] EOF  null
+[tester::#OL4] [test-3] ✓ 6 line(s) match on stdout
+[tester::#OL4] [test-3] ✓ Received exit code 0.
+[tester::#OL4] [test-4] Running test case: 4
+[tester::#OL4] [test-4] Writing contents to ./test.lox:
+[tester::#OL4] [test-4.lox] )(()))(
+[tester::#OL4] [test-4] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_PAREN ( null
+[your_program] LEFT_PAREN ( null
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_PAREN ) null
+[your_program] RIGHT_PAREN ) null
+[your_program] LEFT_PAREN ( null
+[your_program] EOF  null
+[tester::#OL4] [test-4] ✓ 8 line(s) match on stdout
+[tester::#OL4] [test-4] ✓ Received exit code 0.
+[tester::#OL4] Test passed.
+[tester::#RY8] Running tests for Stage #RY8 (Scanning: Empty file)
+[tester::#RY8] [test-1] Writing contents to ./test.lox:
+[tester::#RY8] [test-1.lox] <|EMPTY FILE|>
+[tester::#RY8] [test-1] $ ./your_program.sh tokenize test.lox
+[your_program]
+[your_program] EOF  null
+[tester::#RY8] [test-1] ✓ 1 line(s) match on stdout
+[tester::#RY8] [test-1] ✓ Received exit code 0.
+[tester::#RY8] Test passed.
+Test passed. Congrats!
+Submit your changes to move to the next step:
+$ codecrafters submit
