@@ -112,16 +112,28 @@ object Evaluator : Expression.Visitor<EvaluationResult> {
         return when (expr.operator) {
             "*" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    success(Value.Number(left.value * right.value))
+                    try {
+                        success(Value.Number(left.value * right.value))
+                    } catch (e: ArithmeticException) {
+                        error("Runtime error: ${e.message}")
+                    }
                 } else {
-                    success(Value.Nil)
+                    error("Runtime error: Operands must be numbers")
                 }
             }
             "/" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    success(Value.Number(left.value / right.value))
+                    if (right.value == 0.0) {
+                        error("Runtime error: Division by zero")
+                    } else {
+                        try {
+                            success(Value.Number(left.value / right.value))
+                        } catch (e: ArithmeticException) {
+                            error("Runtime error: ${e.message}")
+                        }
+                    }
                 } else {
-                    success(Value.Nil)
+                    error("Runtime error: Operands must be numbers")
                 }
             }
             "+" -> {
