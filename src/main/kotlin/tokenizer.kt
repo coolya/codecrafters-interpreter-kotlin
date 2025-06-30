@@ -167,13 +167,10 @@ tailrec fun lexToken(iterator: CharacterIterator?, line: Int, tokenStream: List<
     }
 }
 
-class TokenIterator(private val tokens: List<TokenLike>) {
-    private var current = 0
-
-    private constructor(tokens: List<TokenLike>, current: Int) : this(tokens) {
+class TokenIterator(private val tokens: List<TokenLike>, private val current : Int = 0) {
+    init {
         require(current < tokens.size)
         require(current >= 0)
-        this.current = current
     }
 
     fun next(): TokenIterator? {

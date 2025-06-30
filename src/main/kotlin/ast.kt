@@ -5,6 +5,7 @@ sealed class Expression {
         fun visitUnaryExpression(expression: Unary): R
         fun visitBinaryExpression(expression: Binary): R
         fun visitBooleanLiteral(literal: BooleanLiteral): R
+        fun visitNilLiteral(literal: NilLiteral): R
     }
 
     abstract fun <R> accept(visitor: Visitor<R>): R
@@ -26,6 +27,10 @@ sealed class Expression {
 
     data class BooleanLiteral(val value: Boolean) : Expression() {
         override fun <R> accept(visitor: Visitor<R>): R = visitor.visitBooleanLiteral(this)
+    }
+
+    data class NilLiteral(val value : String = "nil") : Expression() {
+        override fun <R> accept(visitor: Visitor<R>): R = visitor.visitNilLiteral(this)
     }
 
     data class Binary(
