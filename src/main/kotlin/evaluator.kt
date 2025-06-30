@@ -138,18 +138,26 @@ object Evaluator : Expression.Visitor<EvaluationResult> {
             }
             "+" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    success(Value.Number(left.value + right.value))
+                    try {
+                        success(Value.Number(left.value + right.value))
+                    } catch (e: ArithmeticException) {
+                        error("Runtime error: ${e.message}")
+                    }
                 } else if (left is Value.String && right is Value.String) {
                     success(Value.String(left.value + right.value))
                 } else {
-                    success(Value.Nil)
+                    error("Runtime error: Operands must be two numbers or two strings")
                 }
             }
             "-" -> {
                 if (left is Value.Number && right is Value.Number) {
-                    success(Value.Number(left.value - right.value))
+                    try {
+                        success(Value.Number(left.value - right.value))
+                    } catch (e: ArithmeticException) {
+                        error("Runtime error: ${e.message}")
+                    }
                 } else {
-                    success(Value.Nil)
+                    error("Runtime error: Operands must be numbers")
                 }
             }
             ">" -> {
