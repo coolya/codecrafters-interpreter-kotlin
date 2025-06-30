@@ -147,17 +147,22 @@ fun main(args: Array<String>) {
             exitProcess(65)
         }
 
+        // Create an initial environment
+        var environment = Environment()
+
         // Process the program using our generic function
         val result = processProgram(
             tokens = tokenSteam,
             processExpression = { expr ->
                 // Print the AST for the expression
-                expr.accept(Printer).let { println(it) }
+                val str = expr.accept(Printer)
+                println(str)
                 Unit // Return Unit as we're just printing
             },
             processStatement = { stmt ->
                 // Print the AST for the statement
-                stmt.accept(StatementPrinter).let { println(it) }
+                val str = stmt.accept(StatementPrinter)
+                println(str)
                 Unit // Return Unit as we're just printing
             }
         )
@@ -172,12 +177,17 @@ fun main(args: Array<String>) {
             exitProcess(65)
         }
 
+        // Create an initial environment
+        var environment = Environment()
+
         // Process the program using our generic function
         val result = processProgram(
             tokens = tokenSteam,
             processExpression = { expr ->
                 // Evaluate the expression and handle the result
-                val evalResult = expr.accept(Evaluator)
+                val (evalResult, newEnv) = expr.accept(Evaluator, environment)
+                // Update the environment for the next evaluation
+                environment = newEnv
                 when (evalResult) {
                     is EvaluationResult.Success -> {
                         // Print the successful result
@@ -193,7 +203,9 @@ fun main(args: Array<String>) {
             },
             processStatement = { stmt ->
                 // Evaluate the statement
-                val evalResult = stmt.accept(StatementEvaluator)
+                val (evalResult, newEnv) = stmt.accept(StatementEvaluator, environment)
+                // Update the environment for the next evaluation
+                environment = newEnv
                 when (evalResult) {
                     is StatementEvaluationResult.Success -> {
                         // For expression statements, we don't print anything
@@ -231,12 +243,17 @@ fun main(args: Array<String>) {
             exitProcess(65)
         }
 
+        // Create an initial environment
+        var environment = Environment()
+
         // Process each statement
         for (statement in statements) {
             when (statement) {
                 is StatementParseResult.Success -> {
                     // Evaluate the statement
-                    val result = statement.statement.accept(StatementEvaluator)
+                    val (result, newEnv) = statement.statement.accept(StatementEvaluator, environment)
+                    // Update the environment for the next evaluation
+                    environment = newEnv
                     when (result) {
                         is StatementEvaluationResult.Success -> {
                             // Continue to the next statement

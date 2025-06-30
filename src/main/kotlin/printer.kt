@@ -1,36 +1,49 @@
-object Printer : Expression.Visitor<String> {
-    override fun visitBinaryExpression(expr: Expression.Binary): String =
+object Printer : Expression.VisitorWithoutEnv<String> {
+    override fun visitBinaryExpressionWithoutEnv(expr: Expression.Binary): String =
         "(${expr.operator} ${expr.left.accept(this)} ${expr.right.accept(this)})"
 
-    override fun visitBooleanLiteral(literal: Expression.BooleanLiteral): String =
+    override fun visitBooleanLiteralWithoutEnv(literal: Expression.BooleanLiteral): String =
         "${literal.value}"
 
-    override fun visitNilLiteral(literal: Expression.NilLiteral): String =
+    override fun visitNilLiteralWithoutEnv(literal: Expression.NilLiteral): String =
         "nil"
 
-    override fun visitNumberLiteralExpression(expression: Expression.NumberLiteral): String =
+    override fun visitNumberLiteralExpressionWithoutEnv(expression: Expression.NumberLiteral): String =
         "${expression.value.value}"
 
-    override fun visitGroupingExpression(expression: Expression.Grouping): String =
+    override fun visitGroupingExpressionWithoutEnv(expression: Expression.Grouping): String =
         "(group ${expression.expression.accept(this)})"
 
-    override fun visitUnaryExpression(expression: Expression.Unary): String =
+    override fun visitUnaryExpressionWithoutEnv(expression: Expression.Unary): String =
         "(${expression.operator} ${expression.right.accept(this)})"
 
-    override fun visitStringLiteralExpression(expression: Expression.StringLiteral): String =
+    override fun visitStringLiteralExpressionWithoutEnv(expression: Expression.StringLiteral): String =
         "${expression.value.value}"
 
-    override fun visitVariableExpression(expression: Expression.Variable): String =
+    override fun visitVariableExpressionWithoutEnv(expression: Expression.Variable): String =
         "${expression.name}"
+
+    override fun visitAssignmentExpressionWithoutEnv(expression: Expression.Assignment): String =
+        "(= ${expression.name} ${expression.value.accept(this)})"
 }
 
-object StatementPrinter : Statement.Visitor<String> {
-    override fun visitPrintStatement(statement: Statement.Print): String =
-        "(print ${statement.expression.accept(Printer)})"
+object StatementPrinter : Statement.VisitorWithoutEnv<String> {
+    override fun visitPrintStatementWithoutEnv(statement: Statement.Print): String {
+        val exprStr = statement.expression.accept(Printer)
+        return "(print $exprStr)"
+    }
 
-    override fun visitExpressionStatement(statement: Statement.ExpressionStatement): String =
-        "(expr ${statement.expression.accept(Printer)})"
+    override fun visitExpressionStatementWithoutEnv(statement: Statement.ExpressionStatement): String {
+        val exprStr = statement.expression.accept(Printer)
+        return "(expr $exprStr)"
+    }
 
-    override fun visitVarStatement(statement: Statement.Var): String =
-        "(var ${statement.name} ${statement.initializer?.accept(Printer) ?: "nil"})"
+    override fun visitVarStatementWithoutEnv(statement: Statement.Var): String {
+        val initStr = if (statement.initializer != null) {
+            statement.initializer.accept(Printer)
+        } else {
+            "nil"
+        }
+        return "(var ${statement.name} $initStr)"
+    }
 }

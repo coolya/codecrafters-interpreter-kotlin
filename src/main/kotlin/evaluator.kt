@@ -91,16 +91,27 @@ fun error(message: String): EvaluationResult {
     return EvaluationResult.Error(message)
 }
 
-// Class to store variable bindings
-class Environment {
-    private val values = mutableMapOf<String, Value>()
-
-    fun define(name: String, value: Value?) {
-        values[name] = value ?: Value.Nil
+// Immutable class to store variable bindings
+data class Environment(private val values: Map<String, Value> = mapOf()) {
+    // Returns a new Environment with the variable defined
+    fun define(name: String, value: Value?): Environment {
+        val newValues = values.toMutableMap()
+        newValues[name] = value ?: Value.Nil
+        return Environment(newValues)
     }
 
     fun get(name: String): Value? {
         return values[name]
+    }
+
+    // Returns a new Environment with the variable updated
+    fun set(name: String, value: Value): Pair<Environment, Value?> {
+        if (!values.containsKey(name)) {
+            return Pair(this, null)
+        }
+        val newValues = values.toMutableMap()
+        newValues[name] = value
+        return Pair(Environment(newValues), value)
     }
 }
 
@@ -130,84 +141,79 @@ fun statementError(message: String): StatementEvaluationResult {
 /**
  * Evaluator for statements
  */
-object StatementEvaluator : Statement.Visitor<StatementEvaluationResult> {
-    // Shared environment for all evaluations
-    val environment = Environment()
-
-    override fun visitPrintStatement(statement: Statement.Print): StatementEvaluationResult {
+object StatementEvaluator : Statement.Visitor<StatementEvaluationResult, Environment> {
+    override fun visitPrintStatement(statement: Statement.Print, environment: Environment): Pair<StatementEvaluationResult, Environment> {
         // Evaluate the expression to be printed
-        val result = statement.expression.accept(Evaluator)
+        val (result, newEnv) = statement.expression.accept(Evaluator, environment)
 
         return when (result) {
             is EvaluationResult.Success -> {
                 // Print the value
                 println(result.value)
-                statementSuccess()
+                Pair(statementSuccess(), newEnv)
             }
             is EvaluationResult.Error -> {
                 // Propagate the error
-                statementError(result.message)
+                Pair(statementError(result.message), newEnv)
             }
         }
     }
 
-    override fun visitExpressionStatement(statement: Statement.ExpressionStatement): StatementEvaluationResult {
+    override fun visitExpressionStatement(statement: Statement.ExpressionStatement, environment: Environment): Pair<StatementEvaluationResult, Environment> {
         // Evaluate the expression
-        val result = statement.expression.accept(Evaluator)
+        val (result, newEnv) = statement.expression.accept(Evaluator, environment)
 
         return when (result) {
             is EvaluationResult.Success -> {
                 // Expression statements don't produce output
-                statementSuccess()
+                Pair(statementSuccess(), newEnv)
             }
             is EvaluationResult.Error -> {
                 // Propagate the error
-                statementError(result.message)
+                Pair(statementError(result.message), newEnv)
             }
         }
     }
 
-    override fun visitVarStatement(statement: Statement.Var): StatementEvaluationResult {
+    override fun visitVarStatement(statement: Statement.Var, environment: Environment): Pair<StatementEvaluationResult, Environment> {
         // Evaluate the initializer if it exists
-        val value = if (statement.initializer != null) {
-            val result = statement.initializer.accept(Evaluator)
+        val (value, newEnv) = if (statement.initializer != null) {
+            val (result, env) = statement.initializer.accept(Evaluator, environment)
             when (result) {
-                is EvaluationResult.Success -> result.value
-                is EvaluationResult.Error -> return statementError(result.message)
+                is EvaluationResult.Success -> Pair(result.value, env)
+                is EvaluationResult.Error -> return Pair(statementError(result.message), env)
             }
         } else {
-            null
+            Pair(null, environment)
         }
 
         // Define the variable in the environment
-        environment.define(statement.name, value)
+        val updatedEnv = newEnv.define(statement.name, value)
 
-        return statementSuccess()
+        return Pair(statementSuccess(), updatedEnv)
     }
 }
 
-object Evaluator : Expression.Visitor<EvaluationResult> {
-    // Access the environment from StatementEvaluator
-    private val environment get() = StatementEvaluator.environment
-
-    override fun visitVariableExpression(expression: Expression.Variable): EvaluationResult {
+object Evaluator : Expression.Visitor<EvaluationResult, Environment> {
+    override fun visitVariableExpression(expression: Expression.Variable, environment: Environment): Pair<EvaluationResult, Environment> {
         val value = environment.get(expression.name)
         return if (value != null) {
-            success(value)
+            Pair(success(value), environment)
         } else {
-            error("Undefined variable '${expression.name}'")
+            Pair(error("Undefined variable '${expression.name}'"), environment)
         }
     }
-    override fun visitBinaryExpression(expr: Expression.Binary): EvaluationResult {
-        val leftResult = expr.left.accept(this)
-        val rightResult = expr.right.accept(this)
+
+    override fun visitBinaryExpression(expr: Expression.Binary, environment: Environment): Pair<EvaluationResult, Environment> {
+        val (leftResult, leftEnv) = expr.left.accept(this, environment)
+        val (rightResult, rightEnv) = expr.right.accept(this, leftEnv)
 
         // If either operand evaluation resulted in an error, propagate the error
         if (leftResult is EvaluationResult.Error) {
-            return leftResult
+            return Pair(leftResult, rightEnv)
         }
         if (rightResult is EvaluationResult.Error) {
-            return rightResult
+            return Pair(rightResult, rightEnv)
         }
 
         // Extract values from successful results
@@ -215,7 +221,7 @@ object Evaluator : Expression.Visitor<EvaluationResult> {
         val right = (rightResult as EvaluationResult.Success).value
 
         // Handle binary operators
-        return when (expr.operator) {
+        val result = when (expr.operator) {
             "*" -> {
                 if (left is Value.Number && right is Value.Number) {
                     try {
@@ -320,37 +326,39 @@ object Evaluator : Expression.Visitor<EvaluationResult> {
             }
             else -> success(Value.Nil)
         }
+
+        return Pair(result, rightEnv)
     }
 
-    override fun visitBooleanLiteral(literal: Expression.BooleanLiteral): EvaluationResult {
-        return success(Value.Boolean(literal.value))
+    override fun visitBooleanLiteral(literal: Expression.BooleanLiteral, environment: Environment): Pair<EvaluationResult, Environment> {
+        return Pair(success(Value.Boolean(literal.value)), environment)
     }
 
-    override fun visitNilLiteral(literal: Expression.NilLiteral): EvaluationResult {
-        return success(Value.Nil)
+    override fun visitNilLiteral(literal: Expression.NilLiteral, environment: Environment): Pair<EvaluationResult, Environment> {
+        return Pair(success(Value.Nil), environment)
     }
 
-    override fun visitNumberLiteralExpression(expression: Expression.NumberLiteral): EvaluationResult {
-        return success(Value.Number(expression.value.value))
+    override fun visitNumberLiteralExpression(expression: Expression.NumberLiteral, environment: Environment): Pair<EvaluationResult, Environment> {
+        return Pair(success(Value.Number(expression.value.value)), environment)
     }
 
-    override fun visitGroupingExpression(expression: Expression.Grouping): EvaluationResult {
+    override fun visitGroupingExpression(expression: Expression.Grouping, environment: Environment): Pair<EvaluationResult, Environment> {
         // Evaluate the expression inside the parentheses
-        return expression.expression.accept(this)
+        return expression.expression.accept(this, environment)
     }
 
-    override fun visitUnaryExpression(expression: Expression.Unary): EvaluationResult {
-        val rightResult = expression.right.accept(this)
+    override fun visitUnaryExpression(expression: Expression.Unary, environment: Environment): Pair<EvaluationResult, Environment> {
+        val (rightResult, rightEnv) = expression.right.accept(this, environment)
 
         // If the operand evaluation resulted in an error, propagate the error
         if (rightResult is EvaluationResult.Error) {
-            return rightResult
+            return Pair(rightResult, rightEnv)
         }
 
         // Extract value from successful result
         val right = (rightResult as EvaluationResult.Success).value
 
-        return when (expression.operator) {
+        val result = when (expression.operator) {
             "-" -> {
                 if (right is Value.Number) {
                     success(Value.Number(-right.value))
@@ -370,9 +378,35 @@ object Evaluator : Expression.Visitor<EvaluationResult> {
             }
             else -> success(Value.Nil)
         }
+
+        return Pair(result, rightEnv)
     }
 
-    override fun visitStringLiteralExpression(expression: Expression.StringLiteral): EvaluationResult {
-        return success(Value.String(expression.value.value))
+    override fun visitStringLiteralExpression(expression: Expression.StringLiteral, environment: Environment): Pair<EvaluationResult, Environment> {
+        return Pair(success(Value.String(expression.value.value)), environment)
+    }
+
+    override fun visitAssignmentExpression(expression: Expression.Assignment, environment: Environment): Pair<EvaluationResult, Environment> {
+        // Evaluate the value to be assigned
+        val (valueResult, valueEnv) = expression.value.accept(this, environment)
+
+        // If the value evaluation resulted in an error, propagate the error
+        if (valueResult is EvaluationResult.Error) {
+            return Pair(valueResult, valueEnv)
+        }
+
+        // Extract value from successful result
+        val value = (valueResult as EvaluationResult.Success).value
+
+        // Set the variable in the environment
+        val (newEnvironment, result) = valueEnv.set(expression.name, value)
+
+        return if (result != null) {
+            // Return the assigned value
+            Pair(success(result), newEnvironment)
+        } else {
+            // If the variable doesn't exist, return an error
+            Pair(error("Undefined variable '${expression.name}'"), valueEnv)
+        }
     }
 }

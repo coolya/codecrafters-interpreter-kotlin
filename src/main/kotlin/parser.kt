@@ -132,8 +132,42 @@ fun statementRecover(tokens: TokenIterator, message: String): StatementParseResu
 }
 
 fun expression(tokens: TokenIterator): ParseResult {
-    // Expression delegates to equality
-    return equality(tokens)
+    // Expression delegates to assignment
+    return assignment(tokens)
+}
+
+fun assignment(tokens: TokenIterator): ParseResult {
+    // Parse the left-hand side as an equality expression
+    val expr = equality(tokens)
+
+    return expr.flatMap { leftExpr, nextTokens ->
+        if (nextTokens == null) {
+            return@flatMap success(leftExpr, null)
+        }
+
+        // Check if the next token is an assignment operator
+        if (nextTokens.token is TokenLike.SimpleToken && (nextTokens.token as TokenLike.SimpleToken).type == TokenType.EQUAL) {
+            // Skip the '=' token
+            val afterEqual = nextTokens.next() ?: return@flatMap success(leftExpr, null)
+
+            // Parse the right-hand side as an assignment expression (for right associativity)
+            val rightResult = assignment(afterEqual)
+
+            return@flatMap rightResult.flatMap { rightExpr, rightNextTokens ->
+                // Check if the left-hand side is a variable
+                if (leftExpr is Expression.Variable) {
+                    // Create an assignment expression
+                    success(Expression.Assignment(leftExpr.name, rightExpr), rightNextTokens)
+                } else {
+                    // Invalid assignment target
+                    error("Invalid assignment target", nextTokens)
+                }
+            }
+        } else {
+            // Not an assignment, return the original expression
+            success(leftExpr, nextTokens)
+        }
+    }
 }
 
 /**
