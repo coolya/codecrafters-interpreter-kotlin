@@ -46,4 +46,9 @@ object StatementPrinter : Statement.VisitorWithoutEnv<String> {
         }
         return "(var ${statement.name} $initStr)"
     }
+
+    override fun visitBlockStatementWithoutEnv(statement: Statement.Block): String {
+        val statementsStr = statement.statements.joinToString(" ") { it.accept(this) }
+        return "(block $statementsStr)"
+    }
 }

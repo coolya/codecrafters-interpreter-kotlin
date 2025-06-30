@@ -98,6 +98,7 @@ sealed class Statement {
         fun visitPrintStatement(statement: Print, environment: E): Pair<R, E>
         fun visitExpressionStatement(statement: ExpressionStatement, environment: E): Pair<R, E>
         fun visitVarStatement(statement: Var, environment: E): Pair<R, E>
+        fun visitBlockStatement(statement: Block, environment: E): Pair<R, E>
     }
 
     // Special case for visitors that don't use the environment (like StatementPrinter)
@@ -108,11 +109,14 @@ sealed class Statement {
             Pair(visitExpressionStatementWithoutEnv(statement), Unit)
         override fun visitVarStatement(statement: Var, environment: Unit): Pair<R, Unit> =
             Pair(visitVarStatementWithoutEnv(statement), Unit)
+        override fun visitBlockStatement(statement: Block, environment: Unit): Pair<R, Unit> =
+            Pair(visitBlockStatementWithoutEnv(statement), Unit)
 
         // Simplified methods without environment
         fun visitPrintStatementWithoutEnv(statement: Print): R
         fun visitExpressionStatementWithoutEnv(statement: ExpressionStatement): R
         fun visitVarStatementWithoutEnv(statement: Var): R
+        fun visitBlockStatementWithoutEnv(statement: Block): R
     }
 
     abstract fun <R, E> accept(visitor: Visitor<R, E>, environment: E): Pair<R, E>
@@ -130,5 +134,9 @@ sealed class Statement {
 
     data class Var(val name: String, val initializer: Expression?) : Statement() {
         override fun <R, E> accept(visitor: Visitor<R, E>, environment: E): Pair<R, E> = visitor.visitVarStatement(this, environment)
+    }
+
+    data class Block(val statements: List<Statement>) : Statement() {
+        override fun <R, E> accept(visitor: Visitor<R, E>, environment: E): Pair<R, E> = visitor.visitBlockStatement(this, environment)
     }
 }

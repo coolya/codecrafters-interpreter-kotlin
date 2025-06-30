@@ -180,6 +180,7 @@ fun statement(tokens: TokenIterator): StatementParseResult {
         when (token.type) {
             TokenType.PRINT -> return printStatement(tokens)
             TokenType.VAR -> return varDeclaration(tokens)
+            TokenType.LEFT_BRACE -> return blockStatement(tokens)
             else -> {}
         }
     }
@@ -241,6 +242,46 @@ fun expressionStatement(tokens: TokenIterator): StatementParseResult {
             statementError(message, errorTokens)
         }
     )
+}
+
+/**
+ * Parse a block statement
+ */
+fun blockStatement(tokens: TokenIterator): StatementParseResult {
+    // Skip the left brace
+    val afterLeftBrace = tokens.next() ?: return statementError("Unexpected end of input after '{'", null)
+
+    // Parse statements until we encounter a right brace
+    val statements = mutableListOf<Statement>()
+    var currentTokens = afterLeftBrace
+
+    while (currentTokens.token !is TokenLike.SimpleToken ||
+           (currentTokens.token as TokenLike.SimpleToken).type != TokenType.RIGHT_BRACE) {
+
+        // Parse a statement
+        val statementResult = statement(currentTokens)
+
+        when (statementResult) {
+            is StatementParseResult.Success -> {
+                statements.add(statementResult.statement)
+                currentTokens = statementResult.nextTokens ?:
+                    return statementError("Unexpected end of input in block", null)
+            }
+            is StatementParseResult.Error -> {
+                return statementResult
+            }
+        }
+
+        // If we've reached the end of input without finding a closing brace
+        if (currentTokens.token !is TokenLike.SimpleToken) {
+            return statementError("Expected '}' at end of block", currentTokens)
+        }
+    }
+
+    // Skip the right brace
+    val afterRightBrace = currentTokens.next()
+
+    return statementSuccess(Statement.Block(statements), afterRightBrace)
 }
 
 /**

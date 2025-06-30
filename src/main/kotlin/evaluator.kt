@@ -192,6 +192,26 @@ object StatementEvaluator : Statement.Visitor<StatementEvaluationResult, Environ
 
         return Pair(statementSuccess(), updatedEnv)
     }
+
+    override fun visitBlockStatement(statement: Statement.Block, environment: Environment): Pair<StatementEvaluationResult, Environment> {
+        // Evaluate each statement in the block in order
+        var currentEnv = environment
+        var result: StatementEvaluationResult = statementSuccess()
+
+        for (stmt in statement.statements) {
+            val (stmtResult, newEnv) = stmt.accept(this, currentEnv)
+            currentEnv = newEnv
+
+            // If a statement evaluation resulted in an error, propagate the error
+            if (stmtResult is StatementEvaluationResult.Error) {
+                return Pair(stmtResult, currentEnv)
+            }
+
+            result = stmtResult
+        }
+
+        return Pair(result, currentEnv)
+    }
 }
 
 object Evaluator : Expression.Visitor<EvaluationResult, Environment> {
