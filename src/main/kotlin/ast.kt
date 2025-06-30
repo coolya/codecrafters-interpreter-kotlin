@@ -7,6 +7,7 @@ sealed class Expression {
         fun visitBooleanLiteral(literal: BooleanLiteral): R
         fun visitNilLiteral(literal: NilLiteral): R
         fun visitStringLiteralExpression(expression: StringLiteral): R
+        fun visitVariableExpression(expression: Variable): R
     }
 
     abstract fun <R> accept(visitor: Visitor<R>): R
@@ -45,12 +46,17 @@ sealed class Expression {
     data class StringLiteral(val value: TokenLike.StringToken) : Expression() {
         override fun <R> accept(visitor: Visitor<R>): R = visitor.visitStringLiteralExpression(this)
     }
+
+    data class Variable(val name: String) : Expression() {
+        override fun <R> accept(visitor: Visitor<R>): R = visitor.visitVariableExpression(this)
+    }
 }
 
 sealed class Statement {
     interface Visitor<R> {
         fun visitPrintStatement(statement: Print): R
         fun visitExpressionStatement(statement: ExpressionStatement): R
+        fun visitVarStatement(statement: Var): R
     }
 
     abstract fun <R> accept(visitor: Visitor<R>): R
@@ -61,5 +67,9 @@ sealed class Statement {
 
     data class ExpressionStatement(val expression: Expression) : Statement() {
         override fun <R> accept(visitor: Visitor<R>): R = visitor.visitExpressionStatement(this)
+    }
+
+    data class Var(val name: String, val initializer: Expression?) : Statement() {
+        override fun <R> accept(visitor: Visitor<R>): R = visitor.visitVarStatement(this)
     }
 }

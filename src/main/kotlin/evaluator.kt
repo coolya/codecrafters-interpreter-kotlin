@@ -91,6 +91,19 @@ fun error(message: String): EvaluationResult {
     return EvaluationResult.Error(message)
 }
 
+// Class to store variable bindings
+class Environment {
+    private val values = mutableMapOf<String, Value>()
+
+    fun define(name: String, value: Value?) {
+        values[name] = value ?: Value.Nil
+    }
+
+    fun get(name: String): Value? {
+        return values[name]
+    }
+}
+
 // Sealed class to represent the result of evaluating a statement
 sealed class StatementEvaluationResult {
     // Success case
@@ -118,6 +131,9 @@ fun statementError(message: String): StatementEvaluationResult {
  * Evaluator for statements
  */
 object StatementEvaluator : Statement.Visitor<StatementEvaluationResult> {
+    // Shared environment for all evaluations
+    val environment = Environment()
+
     override fun visitPrintStatement(statement: Statement.Print): StatementEvaluationResult {
         // Evaluate the expression to be printed
         val result = statement.expression.accept(Evaluator)
@@ -150,9 +166,38 @@ object StatementEvaluator : Statement.Visitor<StatementEvaluationResult> {
             }
         }
     }
+
+    override fun visitVarStatement(statement: Statement.Var): StatementEvaluationResult {
+        // Evaluate the initializer if it exists
+        val value = if (statement.initializer != null) {
+            val result = statement.initializer.accept(Evaluator)
+            when (result) {
+                is EvaluationResult.Success -> result.value
+                is EvaluationResult.Error -> return statementError(result.message)
+            }
+        } else {
+            null
+        }
+
+        // Define the variable in the environment
+        environment.define(statement.name, value)
+
+        return statementSuccess()
+    }
 }
 
 object Evaluator : Expression.Visitor<EvaluationResult> {
+    // Access the environment from StatementEvaluator
+    private val environment get() = StatementEvaluator.environment
+
+    override fun visitVariableExpression(expression: Expression.Variable): EvaluationResult {
+        val value = environment.get(expression.name)
+        return if (value != null) {
+            success(value)
+        } else {
+            error("Undefined variable '${expression.name}'")
+        }
+    }
     override fun visitBinaryExpression(expr: Expression.Binary): EvaluationResult {
         val leftResult = expr.left.accept(this)
         val rightResult = expr.right.accept(this)

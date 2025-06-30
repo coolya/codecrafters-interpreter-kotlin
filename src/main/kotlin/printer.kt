@@ -19,6 +19,9 @@ object Printer : Expression.Visitor<String> {
 
     override fun visitStringLiteralExpression(expression: Expression.StringLiteral): String =
         "${expression.value.value}"
+
+    override fun visitVariableExpression(expression: Expression.Variable): String =
+        "${expression.name}"
 }
 
 object StatementPrinter : Statement.Visitor<String> {
@@ -27,4 +30,7 @@ object StatementPrinter : Statement.Visitor<String> {
 
     override fun visitExpressionStatement(statement: Statement.ExpressionStatement): String =
         "(expr ${statement.expression.accept(Printer)})"
+
+    override fun visitVarStatement(statement: Statement.Var): String =
+        "(var ${statement.name} ${statement.initializer?.accept(Printer) ?: "nil"})"
 }

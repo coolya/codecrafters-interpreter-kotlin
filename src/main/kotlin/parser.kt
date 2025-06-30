@@ -141,8 +141,13 @@ fun expression(tokens: TokenIterator): ParseResult {
  */
 fun statement(tokens: TokenIterator): StatementParseResult {
     // Check if the current token is a print keyword
-    if (tokens.token is TokenLike.SimpleToken && (tokens.token as TokenLike.SimpleToken).type == TokenType.PRINT) {
-        return printStatement(tokens)
+    if (tokens.token is TokenLike.SimpleToken) {
+        val token = tokens.token as TokenLike.SimpleToken
+        when (token.type) {
+            TokenType.PRINT -> return printStatement(tokens)
+            TokenType.VAR -> return varDeclaration(tokens)
+            else -> {}
+        }
     }
 
     // Otherwise, it's an expression statement
@@ -202,6 +207,56 @@ fun expressionStatement(tokens: TokenIterator): StatementParseResult {
             statementError(message, errorTokens)
         }
     )
+}
+
+/**
+ * Parse a variable declaration
+ */
+fun varDeclaration(tokens: TokenIterator): StatementParseResult {
+    // Skip the 'var' keyword
+    val afterVar = tokens.next() ?: return statementError("Unexpected end of input after 'var'", null)
+
+    // Expect an identifier
+    if (afterVar.token !is TokenLike.SimpleToken || (afterVar.token as TokenLike.SimpleToken).type != TokenType.IDENTIFIER) {
+        return statementError("Expected variable name", afterVar)
+    }
+
+    val name = (afterVar.token as TokenLike.SimpleToken).lexeme
+    var afterName = afterVar.next() ?: return statementError("Unexpected end of input after variable name", null)
+
+    // Check for initializer
+    var initializer: Expression? = null
+    if (afterName.token is TokenLike.SimpleToken && (afterName.token as TokenLike.SimpleToken).type == TokenType.EQUAL) {
+        // Skip the '=' token
+        val afterEqual = afterName.next() ?: return statementError("Unexpected end of input after '='", null)
+
+        // Parse the initializer expression
+        val initResult = expression(afterEqual)
+
+        return initResult.fold(
+            onSuccess = { expr, afterExpr ->
+                initializer = expr
+                afterName = afterExpr ?: return@fold statementError("Unexpected end of input after initializer", null)
+
+                // Check for semicolon
+                if (afterName.token is TokenLike.SimpleToken && (afterName.token as TokenLike.SimpleToken).type == TokenType.SEMICOLON) {
+                    statementSuccess(Statement.Var(name, initializer), afterName.next())
+                } else {
+                    statementError("Expected ';' after variable declaration", afterName)
+                }
+            },
+            onError = { message, errorTokens ->
+                statementError(message, errorTokens)
+            }
+        )
+    }
+
+    // No initializer, just check for semicolon
+    if (afterName.token is TokenLike.SimpleToken && (afterName.token as TokenLike.SimpleToken).type == TokenType.SEMICOLON) {
+        return statementSuccess(Statement.Var(name, null), afterName.next())
+    } else {
+        return statementError("Expected ';' after variable declaration", afterName)
+    }
 }
 
 /**
@@ -350,6 +405,7 @@ fun primary(tokens: TokenIterator): ParseResult {
                 TokenType.TRUE -> success(Expression.BooleanLiteral(true), tokens.next())
                 TokenType.FALSE -> success(Expression.BooleanLiteral(false), tokens.next())
                 TokenType.NIL -> success(Expression.NilLiteral(), tokens.next())
+                TokenType.IDENTIFIER -> success(Expression.Variable(token.lexeme), tokens.next())
                 TokenType.LEFT_PAREN -> {
                     // Handle parenthesized expressions
                     val nextTokens = tokens.next() ?: return success(Expression.NilLiteral(), null)
