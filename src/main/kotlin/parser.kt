@@ -9,30 +9,46 @@ fun expression(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
     return term(tokens)
 }
 
-fun term(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
-    // Start with a factor expression
-    var (expr, nextTokens) = factor(tokens)
+/**
+ * Helper function to parse binary expressions with the given operator types
+ */
+fun parseBinaryExpression(
+    tokens: TokenIterator,
+    parseOperand: (TokenIterator) -> Pair<Expression, TokenIterator?>,
+    operatorTypes: List<TokenType>
+): Pair<Expression, TokenIterator?> {
+    // Start with parsing the left operand
+    var (expr, nextTokens) = parseOperand(tokens)
 
-    // Continue as long as we find + or - operators
+    // Continue as long as we find operators of the specified types
     while (nextTokens != null && nextTokens.token is TokenLike.SimpleToken) {
         val token = nextTokens.token as TokenLike.SimpleToken
-        if (token.type == TokenType.PLUS || token.type == TokenType.MINUS) {
+        if (token.type in operatorTypes) {
             val operator = token.lexeme
             val afterOperator = nextTokens.next() ?: return Pair(expr, null)
 
             // Parse the right operand
-            val (right, afterRight) = factor(afterOperator)
+            val (right, afterRight) = parseOperand(afterOperator)
 
             // Create a binary expression
             expr = Expression.Binary(expr, operator, right)
             nextTokens = afterRight
         } else {
-            // If not an addition or subtraction operator, break the loop
+            // If not one of the specified operators, break the loop
             break
         }
     }
 
     return Pair(expr, nextTokens)
+}
+
+fun term(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
+    // Handle addition and subtraction operators
+    return parseBinaryExpression(
+        tokens,
+        ::factor,
+        listOf(TokenType.PLUS, TokenType.MINUS)
+    )
 }
 
 fun unary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
@@ -56,29 +72,12 @@ fun unary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
 }
 
 fun factor(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
-    // Start with a unary expression
-    var (expr, nextTokens) = unary(tokens)
-
-    // Continue as long as we find * or / operators
-    while (nextTokens != null && nextTokens.token is TokenLike.SimpleToken) {
-        val token = nextTokens.token as TokenLike.SimpleToken
-        if (token.type == TokenType.STAR || token.type == TokenType.SLASH) {
-            val operator = token.lexeme
-            val afterOperator = nextTokens.next() ?: return Pair(expr, null)
-
-            // Parse the right operand
-            val (right, afterRight) = unary(afterOperator)
-
-            // Create a binary expression
-            expr = Expression.Binary(expr, operator, right)
-            nextTokens = afterRight
-        } else {
-            // If not a multiplication or division operator, break the loop
-            break
-        }
-    }
-
-    return Pair(expr, nextTokens)
+    // Handle multiplication and division operators
+    return parseBinaryExpression(
+        tokens,
+        ::unary,
+        listOf(TokenType.STAR, TokenType.SLASH)
+    )
 }
 
 fun primary(tokens: TokenIterator): Pair<Expression, TokenIterator?> {
