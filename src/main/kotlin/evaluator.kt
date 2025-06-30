@@ -92,26 +92,60 @@ fun error(message: String): EvaluationResult {
 }
 
 // Immutable class to store variable bindings
-data class Environment(private val values: Map<String, Value> = mapOf()) {
+data class Environment(
+    private val values: Map<String, Value> = mapOf(),
+    private val parent: Environment? = null
+) {
     // Returns a new Environment with the variable defined
     fun define(name: String, value: Value?): Environment {
         val newValues = values.toMutableMap()
         newValues[name] = value ?: Value.Nil
-        return Environment(newValues)
+        return Environment(newValues, parent)
     }
 
+    // Create a new environment with this environment as the parent
+    fun createChildScope(): Environment {
+        return Environment(mapOf(), this)
+    }
+
+    // Get the parent environment
+    fun getParent(): Environment? {
+        return parent
+    }
+
+    // Look up a variable in this environment or any parent environment
     fun get(name: String): Value? {
-        return values[name]
+        // Check if the variable exists in the current environment
+        val value = values[name]
+        if (value != null) {
+            return value
+        }
+
+        // If not found and we have a parent, check the parent
+        return parent?.get(name)
     }
 
     // Returns a new Environment with the variable updated
+    // Searches through the scope chain to find the variable
     fun set(name: String, value: Value): Pair<Environment, Value?> {
-        if (!values.containsKey(name)) {
-            return Pair(this, null)
+        // If the variable exists in this environment, update it
+        if (values.containsKey(name)) {
+            val newValues = values.toMutableMap()
+            newValues[name] = value
+            return Pair(Environment(newValues, parent), value)
         }
-        val newValues = values.toMutableMap()
-        newValues[name] = value
-        return Pair(Environment(newValues), value)
+
+        // If we have a parent, try to set the variable in the parent
+        if (parent != null) {
+            val (newParent, result) = parent.set(name, value)
+            // If the variable was found in a parent, create a new environment with the updated parent
+            if (result != null) {
+                return Pair(Environment(values, newParent), result)
+            }
+        }
+
+        // Variable not found in any scope
+        return Pair(this, null)
     }
 }
 
@@ -194,23 +228,27 @@ object StatementEvaluator : Statement.Visitor<StatementEvaluationResult, Environ
     }
 
     override fun visitBlockStatement(statement: Statement.Block, environment: Environment): Pair<StatementEvaluationResult, Environment> {
-        // Evaluate each statement in the block in order
-        var currentEnv = environment
+        // Create a new environment for this block with the current environment as its parent
+        var blockEnv = environment.createChildScope()
         var result: StatementEvaluationResult = statementSuccess()
 
+        // Evaluate each statement in the block in order
         for (stmt in statement.statements) {
-            val (stmtResult, newEnv) = stmt.accept(this, currentEnv)
-            currentEnv = newEnv
+            val (stmtResult, newEnv) = stmt.accept(this, blockEnv)
+            blockEnv = newEnv
 
             // If a statement evaluation resulted in an error, propagate the error
             if (stmtResult is StatementEvaluationResult.Error) {
-                return Pair(stmtResult, currentEnv)
+                return Pair(stmtResult, environment)
             }
 
             result = stmtResult
         }
 
-        return Pair(result, currentEnv)
+        // Return the original environment, not the block's environment
+        // This ensures variables defined in the block are not visible outside
+        // However, we need to preserve changes to variables from outer scopes
+        return Pair(result, blockEnv.getParent() ?: environment)
     }
 }
 
