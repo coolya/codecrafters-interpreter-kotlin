@@ -34,7 +34,7 @@ object Evaluator : Expression.Visitor<Value> {
         val left = expr.left.accept(this)
         val right = expr.right.accept(this)
 
-        // Handle multiplication and division
+        // Handle binary operators
         return when (expr.operator) {
             "*" -> {
                 if (left is Value.Number && right is Value.Number) {
@@ -46,6 +46,20 @@ object Evaluator : Expression.Visitor<Value> {
             "/" -> {
                 if (left is Value.Number && right is Value.Number) {
                     Value.Number(left.value / right.value)
+                } else {
+                    Value.Nil
+                }
+            }
+            "+" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Number(left.value + right.value)
+                } else {
+                    Value.Nil
+                }
+            }
+            "-" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Number(left.value - right.value)
                 } else {
                     Value.Nil
                 }
