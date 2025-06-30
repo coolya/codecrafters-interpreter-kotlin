@@ -14,6 +14,8 @@
     - Leverage tail recursion with the `tailrec` modifier for recursive functions, as seen in the `lexToken` function
     - Use pure functions that avoid side effects
     - Avoid explicit casts and rely on the compilers type inference to make code more maintainable.
+    - Do not use global variables, always encode the information into the return type.
+    - Handle errors in functional programming pattern e.g. using `map`, `flatMap` or `fold`. 
 
 2. **Sealed Classes and Pattern Matching**
     - Use sealed classes for representing restricted class hierarchies as seen in `Expression` and `TokenLike`

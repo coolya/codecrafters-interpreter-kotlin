@@ -66,6 +66,34 @@ object Evaluator : Expression.Visitor<Value> {
                     Value.Nil
                 }
             }
+            ">" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Boolean(left.value > right.value)
+                } else {
+                    Value.Nil
+                }
+            }
+            "<" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Boolean(left.value < right.value)
+                } else {
+                    Value.Nil
+                }
+            }
+            ">=" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Boolean(left.value >= right.value)
+                } else {
+                    Value.Nil
+                }
+            }
+            "<=" -> {
+                if (left is Value.Number && right is Value.Number) {
+                    Value.Boolean(left.value <= right.value)
+                } else {
+                    Value.Nil
+                }
+            }
             else -> Value.Nil
         }
     }
